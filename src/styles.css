@@ -1,0 +1,28 @@
+.custom-container{
+	@apply px-2 md:px-4 lg:container lg:mx-auto
+}
+.loginbox {
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.pattern{
+  background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='40' height='40' patternTransform='scale(2) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0, 0%, 0%, 1)'/><path d='M0 10v20m40-20v20M10 40h20M10 0h20m10 50c-5.523 0-10-4.477-10-10s4.477-10 10-10 10 4.477 10 10-4.477 10-10 10zM10 40c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10 10 4.477 10 10m30-30c-5.523 0-10-4.477-10-10s4.477-10 10-10S50-5.523 50 0s-4.477 10-10 10zM10 0c0 5.523-4.477 10-10 10S-10 5.523-10 0s4.477-10 10-10S10-5.523 10 0'  stroke-width='1' stroke='hsla(198.7, 97.60000000000001%, 48.39999999999999%, 1)' fill='none'/><path d='M20-10v20m0 20v20m-30-30h20m20 0h20m-20 0c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10 10 4.477 10 10'  stroke-width='1' stroke='hsla(32.8, 89.89999999999999%, 64.9%, 1)' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>")
+}
+
+  .pattern-star {
+    background:
+      conic-gradient(at 50% 25%, rgba(0, 0, 0, 0) 75%, rgba(240, 253, 249, 0.8) 0), 
+      conic-gradient(at 50% 25%, rgba(0, 0, 0, 0) 75%, rgba(240, 253, 249, 0.8) 0) 78px 78px,
+      conic-gradient(at 50% 25%, rgba(0, 0, 0, 0) 75%, rgba(240, 253, 249, 0.8) 0) calc(2 * 78px) calc(2 * 78px),
+      conic-gradient(at 50% 25%, rgba(0, 0, 0, 0) 75%, rgba(240, 253, 249, 0.8) 0) calc(3 * 78px) calc(3 * 78px),
+      repeating-linear-gradient(135deg, rgba(44, 222, 166, 0.6) 0 12.5%, rgba(22, 142, 104, 0.7) 0 25%); 
+    background-size: 100% calc(4 * 78px);
+    background-repeat: no-repeat;
+}
+
+.pattern-honey-comb{
+  background: repeating-radial-gradient(circle, transparent, transparent 5.3px, #168e68 5.3px, #168e68 6.8px), repeating-radial-gradient(circle, transparent, transparent 5.3px, #168e68 5.3px, #168e68 6.8px), #f0fdf9;
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px, 30px 15px;
+  background-color: #f0fdf9;
+}
