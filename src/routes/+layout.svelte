@@ -1,7 +1,6 @@
 <script>
 	import '../app.css';
 	import { Toaster } from 'svelte-french-toast';
-	import '../app.css';
 	import 'iconify-icon';
 </script>
 

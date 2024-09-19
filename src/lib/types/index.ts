@@ -1,18 +1,4 @@
-export interface IUserInfo {
-	firstName: string;
-	lastName: string;
-	middleName: string;
-	name: string;
-	role: string;
-	roleId: number;
-	username: string;
-	employeeId: string;
-	userId: string;
-	initials: string;
-	profileImage: string;
-	permissions: string[];
-	tags: string[];
-}
+
 export interface IMenuItem {
 	title: string;
 	icon?: string;
