@@ -12,38 +12,35 @@
 	}
 </script>
 
-<div class="w-screen h-screen overflow-hidden">
-	<div class=" w-full h-full overflow-y-auto">
-		<div class="flex flex-col w-full h-full">
-			<div class="flex flex-col w-full  sticky top-0 z-10 backdrop-blur-lg !bg-[#F0FDF9]">
-				<div class="custom-container">
-					<Topbar
-						user={{ firstName: 'as', lastName: 'ddd' }}
-						on:signout={() => (showAlert = true)}
-					/>
-				</div>
-				<div class=" relative">
-					<div class="pattern-star z-[-1] opacity-50 lg:opacity-[80%] h-16">
-						<p
-							class="custom-container text-xl font-semibold tracking-tighter"
-							class:pt-2={$activePage.showBreadCrumb}
-							class:pt-5={!$activePage.showBreadCrumb}
-						>
-							{$activePage.title}
-						</p>
-						{#if $activePage.showBreadCrumb}
-							<div class="custom-container mb-4">
-								<Breadcrumbs options={$breadCrumb} {activeBreadCrumb} on:click={optionClicked} />
-							</div>
-						{/if}
-					</div>
-				</div>
+<div class="w-screen h-screen overflow-hidden bg-gray-50/50">
+	<!-- <div class=" w-full h-full overflow-y-auto"> -->
+	<div class="flex flex-col w-full h-full overflow-y-auto">
+		<div class="flex flex-col w-full sticky top-0 z-10 backdrop-blur-lg !bg-[#F0FDF9]">
+			<div class="custom-container">
+				<Topbar user={{ firstName: 'as', lastName: 'ddd' }} on:signout={() => (showAlert = true)} />
 			</div>
-			<div class="flex-grow w-full h-full bg-gray-50/50 pt-3">
-				<div class="w-full h-full custom-container">
-					<slot />
+			<div class=" relative">
+				<div class="pattern-star z-[-1] opacity-50 lg:opacity-[80%] h-16">
+					<p
+						class="custom-container text-xl font-semibold tracking-tighter"
+						class:pt-2={$activePage.showBreadCrumb}
+						class:pt-5={!$activePage.showBreadCrumb}
+					>
+						{$activePage.title}
+					</p>
+					{#if $activePage.showBreadCrumb}
+						<div class="custom-container mb-4">
+							<Breadcrumbs options={$breadCrumb} {activeBreadCrumb} on:click={optionClicked} />
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
+		<div class="flex-grow w-full h-full  pt-3">
+			<div class="w-full h-full custom-container flex-grow">
+				<slot />
+			</div>
+		</div>
 	</div>
+	<!-- </div> -->
 </div>
