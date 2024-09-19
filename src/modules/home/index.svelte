@@ -75,7 +75,7 @@
 	let isLoadingProjects = true;
 	let openForm = false;
 	let electionBrokeDown = {} as echarts.EChartsOption;
-  let isLoadingChart = true
+	let isLoadingChart = true;
 
 	async function loadElections() {
 		try {
@@ -101,13 +101,13 @@
 		displayedElections = [
 			{
 				isFirst: true,
-				id: 10,
+				id: '',
 				name: 'Add Election'
 			} as IElectionToShow,
 			...electionsData.slice(startIndex, startIndex + incrementCount),
 			{
 				isLast: true,
-				id: 1000,
+				id: '1000',
 				name: 'Get More Elections'
 			} as IElectionToShow
 		];
@@ -124,7 +124,7 @@
 			...moreProjects,
 			{
 				isLast: true,
-				id: 10000,
+				id: "10000",
 				name: 'Get More Elections'
 			} as IElectionToShow
 		];
@@ -151,9 +151,9 @@
 			}
 		} catch (error: any) {
 			showError(error?.message || error);
-		}finally{
-      isLoadingChart = false
-    }
+		} finally {
+			isLoadingChart = false;
+		}
 	});
 </script>
 
@@ -235,13 +235,13 @@
 	<div class="space-y-4 pb-4">
 		<p class="text-xl text-primary-600 antialiased tracking-tighter">Breakdown</p>
 		<div class=" bg-white p-4 rounded-[5px] loginbox h-[530px]">
-      {#if isLoadingChart}
-        <div class="w-full h-full">
-          <PageLoader size={50}/>
-        </div>
-        {:else}
-        <Echart chartOptions={electionBrokeDown} />
-      {/if}
+			{#if isLoadingChart}
+				<div class="w-full h-full">
+					<PageLoader size={50} />
+				</div>
+			{:else}
+				<Echart chartOptions={electionBrokeDown} />
+			{/if}
 		</div>
 	</div>
 </div>

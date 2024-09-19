@@ -15,7 +15,7 @@
 <div class="w-screen h-screen overflow-hidden">
 	<div class=" w-full h-full overflow-y-auto">
 		<div class="flex flex-col w-full h-full">
-			<div class="flex flex-col w-full  sticky top-0 backdrop-blur-lg !bg-[#F0FDF9]">
+			<div class="flex flex-col w-full  sticky top-0 z-10 backdrop-blur-lg !bg-[#F0FDF9]">
 				<div class="custom-container">
 					<Topbar
 						user={{ firstName: 'as', lastName: 'ddd' }}
@@ -39,7 +39,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="flex-grow w-full h-full bg-white pt-3">
+			<div class="flex-grow w-full h-full bg-gray-50/50 pt-3">
 				<div class="w-full h-full custom-container">
 					<slot />
 				</div>

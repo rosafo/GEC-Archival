@@ -9,8 +9,11 @@
 </script>
 
 <div class="py-2 flex justify-between items-center">
-	<div>
-		<img src="/ec_logo.png" alt="logo" class="w-14" />
+	<div class="flex  gap-4 items-center">
+		<div>
+			<img src="/ec_logo.png" alt="logo" class="w-14" />
+		</div>
+		<p class="text-xl font-medium tracking-tight">GEC Archival</p>
 	</div>
 	<div class="flex flex-grow sm:hidden" />
 	<div class="flex items-center gap-4">

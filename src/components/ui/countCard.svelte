@@ -8,6 +8,8 @@
 	export let path: string | null = null;
 	export let high = false;
 	export let showHover = true;
+	export let iconSize = 21;
+	export let iconClass = '';
 </script>
 
 <a
@@ -22,7 +24,7 @@
 	on:click
 >
 	<div class="bg-white rounded-full w-12 h-12 flex justify-center items-center loginbox shrink-0">
-		<iconify-icon {icon} style="font-size: 21px;" />
+		<iconify-icon {icon} style="font-size: {iconSize}px;" class={iconClass} />
 	</div>
 	<div class="flex flex-col w-full">
 		<div class="flex gap-2 items-center">
