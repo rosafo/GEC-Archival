@@ -169,6 +169,7 @@
 				icon="fluent:vote-24-filled"
 				iconSize={25}
 				iconClass="text-[#168e68]"
+				showHover={false}
 			/>
 
 			<CountCard
@@ -177,6 +178,7 @@
 				icon="fluent:vote-24-filled"
 				iconSize={25}
 				iconClass="text-[#168e68]"
+				showHover={false}
 			/>
 			<CountCard
 				label="Total No. of Files"
@@ -184,6 +186,7 @@
 				icon="fluent:vote-24-filled"
 				iconSize={25}
 				iconClass="text-[#168e68]"
+				showHover={false}
 			/>
 			<CountCard
 				label="Total No. of Activities"
@@ -191,6 +194,7 @@
 				icon="fluent:vote-24-filled"
 				iconSize={25}
 				iconClass="text-[#168e68]"
+				showHover={false}
 			/>
 			<CountCard
 				label="Total No. of Devices"
@@ -198,6 +202,7 @@
 				icon="fluent:vote-24-filled"
 				iconSize={25}
 				iconClass="text-[#168e68]"
+				showHover={false}
 			/>
 			<CountCard
 				label="Total No. of Polling Stations"
@@ -205,9 +210,10 @@
 				icon="fluent:vote-24-filled"
 				iconSize={25}
 				iconClass="text-[#168e68]"
+				showHover={false}
 			/>
 		</div>
-		<div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6 ">
+		<div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
 			<div class="space-y-4">
 				<p class="text-xl text-primary-600 antialiased tracking-tighter">
 					Successful Verifications
