@@ -3,6 +3,7 @@
 	import Breadcrumbs from '$cmps/ui/breadcrumbs.svelte';
 	import { activePage } from '$data/appStore';
 	import { breadCrumb } from '$lib/utils';
+	import { userInfo } from '$svc/auth';
 	let showAlert = false;
 	$: activeBreadCrumb = $breadCrumb[$breadCrumb.length - 1].title;
 	function optionClicked({ detail }: any) {
@@ -17,7 +18,7 @@
 	<div class="flex flex-col w-full h-full overflow-y-auto">
 		<div class="flex flex-col w-full sticky top-0 z-10 backdrop-blur-lg !bg-[#F0FDF9]">
 			<div class="custom-container">
-				<Topbar user={{ firstName: 'as', lastName: 'ddd' }} on:signout={() => (showAlert = true)} />
+				<Topbar user={$userInfo} on:signout={() => (showAlert = true)} />
 			</div>
 			<div class=" relative">
 				<div class="pattern-star z-[-1] opacity-50 lg:opacity-[80%] h-16">
@@ -36,7 +37,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex-grow w-full h-full  pt-3">
+		<div class="flex-grow w-full h-full pt-3">
 			<div class="w-full h-full custom-container flex-grow">
 				<slot />
 			</div>

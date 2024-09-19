@@ -42,7 +42,7 @@
 		minDate,
 		maxDate,
 		element: fullPickerId,
-		
+
 		onChange(selectedDates: any, dateStr: any) {
 			// console.log('changed', { name, selectedDates, dateStr });
 		}
@@ -50,7 +50,7 @@
 
 	function handleChange(event: any) {
 		const [selectedDates, dateStr] = event.detail;
-		// console.log({ selectedDates, dateStr });
+		dispatch(selectedDates, dateStr);
 	}
 
 	$: hasError = $touched[name] && $errors[name]?.length;

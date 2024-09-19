@@ -1,6 +1,9 @@
-import type { ICallResultType, IQuerryResultType } from '$lib/types';
+import type { ICallResultType, IQuerryResultType, ITableDataProps } from '$lib/types';
+import type { IBrowseData } from '$modules/elections/browse/index.svelte';
 import type { IElectionDashoardTypes } from '$modules/elections/dashboard.svelte';
+import type { IFilesData } from '$modules/elections/files/index.svelte';
 import type { IElectionToPlot } from '$modules/home/index.svelte';
+import { nanoid } from 'nanoid';
 
 export interface IElectionDto {
 	name: string;
@@ -157,5 +160,157 @@ export async function readElectionDashboard(
 export async function readElectionById(id: string): Promise<IQuerryResultType<IElection>> {
 	return new Promise((resolve, reject) => {
 		resolve({ success: true, message: '', data: data.find((x) => x.id === id) || data[0] });
+	});
+}
+
+function randomDate(start: Date, end: Date): Date {
+	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+const statuses = ['Verified', 'Pending', 'Rejected', 'In Progress'];
+const verificationTypes = ['Biometric', 'ID Card', 'Manual'];
+const pollingStations = ['Station 1', 'Station 2', 'Station 3', 'Station 4'];
+
+export async function readBrowseData(
+	page: number = 1,
+	pageSize: number = 10,
+	filter = {},
+	order: any[] = []
+): Promise<IQuerryResultType<ITableDataProps<IBrowseData>>> {
+	return new Promise((resolve, reject) => {
+		const generateBrowseData = (): IBrowseData[] => {
+			const data: IBrowseData[] = [];
+			for (let i = 0; i < 15; i++) {
+				data.push({
+					id: nanoid(),
+					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
+					voterId: `VTR-${Math.floor(1000 + Math.random() * 9000)}`,
+					verificationType: verificationTypes[Math.floor(Math.random() * verificationTypes.length)],
+					status: statuses[Math.floor(Math.random() * statuses.length)],
+					notes: `Note for voter ${i + 1}`,
+					gender: 'Male',
+					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)]
+				});
+			}
+			return data;
+		};
+		const d = generateBrowseData();
+		setTimeout(() => {
+			resolve({
+				success: true,
+				message: '',
+				data: {
+					pageInfo: { hasNextPage: false, hasPreviousPage: false },
+					totalCount: d.length,
+					items: d
+				}
+			});
+		}, 400);
+	});
+}
+
+export async function readBrowseDataById(id: string): Promise<IQuerryResultType<IBrowseData>> {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve({
+				success: true,
+				message: '',
+				data: {
+					id: nanoid(),
+					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
+					voterId: `VTR-${Math.floor(1000 + Math.random() * 9000)}`,
+					verificationType: verificationTypes[Math.floor(Math.random() * verificationTypes.length)],
+					status: statuses[Math.floor(Math.random() * statuses.length)],
+					notes: `Note for voter 1`,
+					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)],
+					gender: 'Male'
+				}
+			});
+		}, 300);
+	});
+}
+
+export async function readPollingStations(): Promise<IQuerryResultType<any[]>> {
+	return new Promise((resolve, reject) => {
+		resolve({
+			success: true,
+			message: '',
+			data: [
+				{ id: '1', name: 'Polling Station 1' },
+				{ id: '2', name: 'Polling Station 2' }
+			]
+		});
+	});
+}
+
+export async function readUploadUsers(): Promise<IQuerryResultType<any[]>> {
+	return new Promise((resolve, reject) => {
+		resolve({
+			success: true,
+			message: '',
+			data: [
+				{ id: '1', name: 'User 1' },
+				{ id: '2', name: 'User 2' }
+			]
+		});
+	});
+}
+
+export async function readFilesData(
+	page: number = 1,
+	pageSize: number = 10,
+	filter = {},
+	order: any[] = []
+): Promise<IQuerryResultType<ITableDataProps<IFilesData>>> {
+	return new Promise((resolve, reject) => {
+		const generateBrowseData = (): IFilesData[] => {
+			const data: IFilesData[] = [];
+			for (let i = 0; i < 15; i++) {
+				data.push({
+					id: nanoid(),
+					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
+					uploadBy: 'Jone Doe',
+					numberFailed: Math.floor(1000 + Math.random() * 9000),
+					numberManual: Math.floor(1000 + Math.random() * 9000),
+					numberSuccessful: Math.floor(1000 + Math.random() * 9000),
+					deviceId: `DV-${Math.floor(1000 + Math.random() * 9000)}`,
+					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)]
+				});
+			}
+			return data;
+		};
+		const d = generateBrowseData();
+		setTimeout(() => {
+			resolve({
+				success: true,
+				message: '',
+				data: {
+					pageInfo: { hasNextPage: false, hasPreviousPage: false },
+					totalCount: d.length,
+					items: d
+				}
+			});
+		}, 400);
+	});
+}
+
+export async function readFileDataById(id: string): Promise<IQuerryResultType<IFilesData>> {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve({
+				success: true,
+				message: '',
+				data: {
+					id: nanoid(),
+					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
+					uploadBy: 'Jone Doe',
+					numberFailed: Math.floor(1000 + Math.random() * 9000),
+					numberManual: Math.floor(1000 + Math.random() * 9000),
+					numberSuccessful: Math.floor(1000 + Math.random() * 9000),
+					deviceId: `DV-${Math.floor(1000 + Math.random() * 9000)}`,
+					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)]
+				}
+			});
+		}, 300);
 	});
 }

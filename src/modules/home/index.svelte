@@ -61,6 +61,7 @@
 	import Editor from './editor.svelte';
 	import Echart from '$cmps/ui/echart.svelte';
 	import PageLoader from '$cmps/ui/pageLoader.svelte';
+	import { userInfo } from '$svc/auth';
 
 	interface IElectionToShow extends IElection {
 		isFirst?: boolean;
@@ -70,12 +71,13 @@
 	let electionsData: IElection[] = [];
 	let displayedElections: IElectionToShow[] = [];
 	let startIndex = 0;
-	const incrementCount = 4;
 	let hasMoreProjects = true;
 	let isLoadingProjects = true;
 	let openForm = false;
 	let electionBrokeDown = {} as echarts.EChartsOption;
 	let isLoadingChart = true;
+	$: canAddElection = $userInfo?.permissions.includes('CanAddElection');
+	$: incrementCount = canAddElection ? 4 : 5;
 
 	async function loadElections() {
 		try {
@@ -111,6 +113,13 @@
 				name: 'Get More Elections'
 			} as IElectionToShow
 		];
+
+		if (!canAddElection) {
+			displayedElections = displayedElections.filter(
+				(x) => !(x.isFirst && x.name === 'Add Election')
+			);
+		}
+
 		startIndex += incrementCount;
 		hasMoreProjects = startIndex < electionsData.length;
 	}

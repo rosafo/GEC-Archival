@@ -119,8 +119,8 @@
 	import { readElectionDashboard } from '$svc/elections';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
+	export let electionId = '';
 
-	let count = 0;
 	let electionCounts = {} as IELecectionCount;
 	let successfulVerification = {} as echarts.EChartsOption;
 	let failedVerification = {} as echarts.EChartsOption;
@@ -131,7 +131,7 @@
 
 	onMount(async () => {
 		try {
-			const ret = await readElectionDashboard();
+			const ret = await readElectionDashboard(electionId);
 			if (!ret.success) {
 				showError(ret.message);
 				return;
@@ -155,13 +155,6 @@
 	<div class="w-full h-full flex justify-center items-center"><PageLoader size={50} /></div>
 {:else}
 	<div class="w-full h-full flex flex-col gap-6" in:slide>
-		<!-- <h2 class="text-xl font-semibold mb-4">Tab 1 Content</h2>
-  <button
-    class="bg-blue-500 text-white py-2 px-4 rounded"
-    on:click={() => count++}
-  >
-    Clicked {count} times
-  </button> -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 			<CountCard
 				label="Total Valid Voters"

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { IUserInfo } from '$lib/types';
 	import { Avatar, Button, DropdownDivider, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import type { IUserInfo } from '../../features/auth/types';
 
 	export let user: IUserInfo | null = null;
 	const dispatch = createEventDispatcher();
@@ -9,7 +9,7 @@
 </script>
 
 <div class="py-2 flex justify-between items-center">
-	<div class="flex  gap-4 items-center">
+	<div class="flex gap-4 items-center">
 		<div>
 			<img src="/ec_logo.png" alt="logo" class="w-14" />
 		</div>
@@ -21,9 +21,16 @@
 			<div />
 			{#if user}
 				<Button pill color="light" class="!p-0 sm:!p-1 h-10  max-w-[150px]  shadow-sm border">
-					<Avatar class="sm:mr-2 w-9 h-9 text-white bg-primary-500  text-sm object-cover">
-						{user?.firstName.slice(0, 1)}{user?.lastName.slice(0, 1)}
-					</Avatar>
+					{#if user?.profileImage}
+						<Avatar class="sm:mr-2 w-9 h-9 text-white bg-primary-500  text-sm object-cover">
+							<img src={user?.profileImage} alt="" class="w-full rounded-full" />
+						</Avatar>
+					{:else}
+						<Avatar class="sm:mr-2 w-9 h-9 text-white bg-primary-500  text-sm object-cover">
+							{user?.initials}
+						</Avatar>
+					{/if}
+
 					<div class="hidden sm:block text-left text-xs sm:pr-2">
 						<div class="w-20 truncate">
 							<span class="font-semibold">{user?.firstName}</span>

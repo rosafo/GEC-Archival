@@ -4,6 +4,7 @@
 		label: string;
 		component: any;
 		icon?: string;
+		isClosable?: boolean;
 	}
 </script>
 
@@ -21,7 +22,7 @@
 </script>
 
 <div class="flex flex-col w-full h-full">
-	<div class="flex space-x-4 border-b-2 mb-4">
+	<div class="flex space-x-3 border-b-2 mb-4 flex-wrap">
 		{#each tabs as tab}
 			<button
 				class="py-2 px-4 border-b-2 rounded-t-md"
@@ -38,6 +39,18 @@
 						{tab.label}
 					</span>
 					<iconify-icon icon={tab.icon} style="font-size: 15px;" />
+					<button
+						class="grid border border-transparent"
+						class:hover:border-primary-500={activeTab !== tab.id}
+						class:hover:border-white={activeTab === tab.id}
+						class:hidden={!tab.isClosable}
+						on:click={(e) => {
+							// if (tabs.length == 2) renderId++
+								// removeItem(tab.id);
+								dispatch('removeItem', { tabId: tab.id });
+							e.stopPropagation();
+						}}><iconify-icon icon="iconamoon:close-thin" style="font-size: 18px;" /></button
+					>
 				</div>
 			</button>
 		{/each}
@@ -46,7 +59,7 @@
 	<div class="p-4 w-full h-full">
 		{#each tabs as tab (tab.id)}
 			<div class:hidden={activeTab !== tab.id} class="w-full h-full">
-				<svelte:component this={tab.component} />
+				<svelte:component this={tab.component} on:addTab/>
 			</div>
 		{/each}
 	</div>

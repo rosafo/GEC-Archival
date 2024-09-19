@@ -1,3 +1,5 @@
+@import 'filepond/dist/filepond.css';
+@import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 .custom-container{
 	@apply px-2 md:px-4 lg:container lg:mx-auto
 }

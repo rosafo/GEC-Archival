@@ -7,6 +7,14 @@ export interface IUserInfo {
 	username: string;
 	initials: string;
 	profileImage: string;
-	permissions: string[];
+	permissions: PermissionTypes[];
 	tags: string[];
 }
+
+export type PermissionTypes =
+	| 'CanAddElection'
+	| 'CanViewElections'
+	| 'CanUploadLogs'
+	| 'CanBrowse'
+	| 'CanViewFiles'
+	| 'CanViewReports';

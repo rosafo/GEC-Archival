@@ -1,4 +1,3 @@
-
 export interface IMenuItem {
 	title: string;
 	icon?: string;
@@ -30,4 +29,17 @@ export interface ICallResultType {
 	success: boolean;
 	message: string;
 	code?: number;
+}
+
+export type IModalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+interface IPageInfo {
+	hasNextPage: boolean;
+	hasPreviousPage: boolean;
+}
+
+export interface ITableDataProps<T> {
+	pageInfo: IPageInfo;
+	totalCount: number;
+	items: T[];
 }
