@@ -124,7 +124,7 @@
 			...moreProjects,
 			{
 				isLast: true,
-				id: "10000",
+				id: '10000',
 				name: 'Get More Elections'
 			} as IElectionToShow
 		];
@@ -211,7 +211,7 @@
 						</button>
 					{:else}
 						<a
-							href={`/private/home/${project.id}?name=${project.name}`}
+							href={`/private/home/${project.id}`}
 							class="flex loginbox gap-4 px-4 items-center bg-white h-[82px] rounded-[5px] border border-transparent hover:border-primary-400"
 						>
 							<div class="bg-primary-500 grid place-content-center rounded-[5px] p-2">
