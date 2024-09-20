@@ -86,19 +86,19 @@ export async function createElection(params: IElectionDto): Promise<ICallResultT
 }
 
 export async function readElectionGraph(): Promise<IQuerryResultType<IElectionToPlot[]>> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => { // todo: use: verificationsByGender
 		setTimeout(() => {
 			resolve({
 				success: true,
 				message: '',
 				data: [
-					{ year: 2000, males: 120, females: 90 },
-					{ year: 2004, males: 200, females: 180 },
-					{ year: 2008, males: 150, females: 130 },
-					{ year: 2012, males: 80, females: 110 },
-					{ year: 2016, males: 70, females: 120 },
-					{ year: 2020, males: 110, females: 140 },
-					{ year: 2024, males: 130, females: 150 }
+					{ name: "2000", males: 120, females: 90, date: new Date() },
+					{ name: "2004", males: 200, females: 180, date: new Date() },
+					{ name: "2008", males: 150, females: 130, date: new Date() },
+					{ name: "2012", males: 80, females: 110, date: new Date() },
+					{ name: "2016", males: 70, females: 120, date: new Date() },
+					{ name: "2020", males: 110, females: 140, date: new Date() },
+					{ name: "2024", males: 130, females: 150, date: new Date() }
 				]
 			});
 		}, 500);
@@ -108,7 +108,7 @@ export async function readElectionGraph(): Promise<IQuerryResultType<IElectionTo
 export async function readElectionDashboard(
 	id: string
 ): Promise<IQuerryResultType<IElectionDashoardTypes>> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => { // todo: electionSummary
 		setTimeout(() => {
 			resolve({
 				success: true,
@@ -168,7 +168,7 @@ function randomDate(start: Date, end: Date): Date {
 }
 
 const statuses = ['Verified', 'Pending', 'Rejected', 'In Progress'];
-const verificationTypes = ['Biometric', 'ID Card', 'Manual'];
+const verificationTypes = ['Finger', 'Face', 'Manual'];
 const pollingStations = ['Station 1', 'Station 2', 'Station 3', 'Station 4'];
 
 export async function readBrowseData(

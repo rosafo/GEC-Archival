@@ -1,12 +1,13 @@
 <script lang="ts" context="module">
 	export interface IElectionToPlot {
-		year: number;
+		name: string;
+		date: Date; // in case we want to sort since the name may not be sequential
 		males: number;
 		females: number;
 	}
 
 	function electionsToPlot(data: IElectionToPlot[]): echarts.EChartsOption {
-		const years = data.map((data) => data.year.toString());
+		const names = data.map((data) => data.name);
 		const maleCounts = data.map((data) => data.males);
 		const femaleCounts = data.map((data) => data.females);
 
@@ -20,7 +21,7 @@
 			},
 			xAxis: {
 				type: 'category',
-				data: years
+				data: names
 			},
 			yAxis: {
 				type: 'value'
