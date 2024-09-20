@@ -1,18 +1,32 @@
+import {
+	CreateElectionStore,
+	ReadElectionsStore,
+	ReadElectionSummaryStore,
+	ReadGenderVerficationsStore,
+	VerificationEntriesStore,
+	type ElectionFilterInput,
+	type ElectionSortInput,
+	type ElectionType$options,
+	type VerificationEntryFilterInput,
+	type VerificationEntrySortInput
+} from '$houdini';
 import type { ICallResultType, IQuerryResultType, ITableDataProps } from '$lib/types';
 import type { IBrowseData } from '$modules/elections/browse/index.svelte';
 import type { IElectionDashoardTypes } from '$modules/elections/dashboard.svelte';
 import type { IFilesData } from '$modules/elections/files/index.svelte';
 import type { IElectionToPlot } from '$modules/home/index.svelte';
+import { callResult, getOne, getPageInfo, gqlError, queryResult } from '$svc/shared';
 import { nanoid } from 'nanoid';
 
 export interface IElectionDto {
 	name: string;
-	year: number;
-	month: number;
+	startDate: Date;
+	endDate: Date;
+	electionType: 'BY_ELECTION' | 'NATIONAL_ELECTION';
 }
 
 export interface IElection extends IElectionDto {
-	id: string;
+	id: number;
 }
 
 const data: IElection[] = [
@@ -65,102 +79,56 @@ const data: IElection[] = [
 		id: '7'
 	}
 ];
-export async function readElections(): Promise<IQuerryResultType<any[]>> {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				success: true,
-				message: '',
-				data: data
-			});
-		}, 500);
-	});
+export async function readElections(
+	page: number = 1,
+	pageSize: number = 10,
+	filter: ElectionFilterInput = {},
+	order: ElectionSortInput[] = [{ startDate: 'DESC' }]
+) {
+	try {
+		const ret = await new ReadElectionsStore().fetch({
+			variables: { ...getPageInfo(page, pageSize), filter: filter, order }
+		});
+		return queryResult(ret, ret.data?.elections);
+	} catch (e) {
+		return gqlError(e);
+	}
 }
 
-export async function createElection(params: IElectionDto): Promise<ICallResultType> {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({ success: true, message: 'Created Election' });
-		}, 300);
-	});
+export async function createElection(params: IElectionDto) {
+	try {
+		const ret = await new CreateElectionStore().mutate({ input: params });
+		return callResult(ret, ret.data?.createElection);
+	} catch (error) {
+		return gqlError(error);
+	}
 }
 
-export async function readElectionGraph(): Promise<IQuerryResultType<IElectionToPlot[]>> {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				success: true,
-				message: '',
-				data: [
-					{ year: 2000, males: 120, females: 90 },
-					{ year: 2004, males: 200, females: 180 },
-					{ year: 2008, males: 150, females: 130 },
-					{ year: 2012, males: 80, females: 110 },
-					{ year: 2016, males: 70, females: 120 },
-					{ year: 2020, males: 110, females: 140 },
-					{ year: 2024, males: 130, females: 150 }
-				]
-			});
-		}, 500);
-	});
+export async function readElectionGraph() {
+	try {
+		const ret = await new ReadGenderVerficationsStore().fetch();
+		return queryResult(ret, ret.data?.verificationsByGender);
+	} catch (error) {
+		gqlError(error);
+	}
 }
 
-export async function readElectionDashboard(
-	id: string
-): Promise<IQuerryResultType<IElectionDashoardTypes>> {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				success: true,
-				message: '',
-				data: {
-					counts: {
-						invalidVoters: 1000,
-						validVoters: 90000,
-						numberOfActivities: 91000,
-						numberOfDevices: 500000,
-						numberOfFiles: 50000,
-						numberOfPollingStations: 70000
-					},
-					verifications: {
-						successful: [
-							{ name: 'Male', count: 30000 },
-							{ name: 'Female', count: 20000 }
-						],
-						failed: [
-							{ name: 'Male', count: 1000 },
-							{ name: 'Female', count: 2000 }
-						],
-						manual: [
-							{ name: 'Male', count: 500 },
-							{ name: 'Female', count: 300 }
-						]
-					},
-					overTime: [
-						{ hour: '7 AM', successful: 20, failed: 5, manual: 3 },
-						{ hour: '8 AM', successful: 25, failed: 3, manual: 4 },
-						{ hour: '9 AM', successful: 22, failed: 7, manual: 2 },
-						{ hour: '10 AM', successful: 30, failed: 2, manual: 6 },
-						{ hour: '11 AM', successful: 28, failed: 6, manual: 4 },
-						{ hour: '12 PM', successful: 32, failed: 1, manual: 3 },
-						{ hour: '1 PM', successful: 29, failed: 4, manual: 5 },
-						{ hour: '2 PM', successful: 31, failed: 3, manual: 4 },
-						{ hour: '3 PM', successful: 26, failed: 5, manual: 6 },
-						{ hour: '4 PM', successful: 24, failed: 7, manual: 5 },
-						{ hour: '5 PM', successful: 33, failed: 2, manual: 7 },
-						{ hour: '6 PM', successful: 27, failed: 3, manual: 4 },
-						{ hour: '7 PM', successful: 28, failed: 8, manual: 1 }
-					]
-				}
-			});
-		}, 500);
-	});
+export async function readElectionDashboard(id: string) {
+	try {
+		const ret = await new ReadElectionSummaryStore().fetch({ variables: { id: +id } });
+		return queryResult(ret, ret.data?.electionSummary);
+	} catch (error) {
+		gqlError(error);
+	}
 }
 
-export async function readElectionById(id: string): Promise<IQuerryResultType<IElection>> {
-	return new Promise((resolve, reject) => {
-		resolve({ success: true, message: '', data: data.find((x) => x.id === id) || data[0] });
-	});
+export async function readElectionById(id: string) {
+	try {
+		const ret = await readElections(1, 1, { id: { eq: +id } });
+		return getOne(ret, (x) => x!.items);
+	} catch (error) {
+		gqlError(error);
+	}
 }
 
 function randomDate(start: Date, end: Date): Date {
@@ -174,60 +142,26 @@ const pollingStations = ['Station 1', 'Station 2', 'Station 3', 'Station 4'];
 export async function readBrowseData(
 	page: number = 1,
 	pageSize: number = 10,
-	filter = {},
-	order: any[] = []
-): Promise<IQuerryResultType<ITableDataProps<IBrowseData>>> {
-	return new Promise((resolve, reject) => {
-		const generateBrowseData = (): IBrowseData[] => {
-			const data: IBrowseData[] = [];
-			for (let i = 0; i < 15; i++) {
-				data.push({
-					id: nanoid(),
-					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
-					voterId: `VTR-${Math.floor(1000 + Math.random() * 9000)}`,
-					verificationType: verificationTypes[Math.floor(Math.random() * verificationTypes.length)],
-					status: statuses[Math.floor(Math.random() * statuses.length)],
-					notes: `Note for voter ${i + 1}`,
-					gender: 'Male',
-					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)]
-				});
-			}
-			return data;
-		};
-		const d = generateBrowseData();
-		setTimeout(() => {
-			resolve({
-				success: true,
-				message: '',
-				data: {
-					pageInfo: { hasNextPage: false, hasPreviousPage: false },
-					totalCount: d.length,
-					items: d
-				}
-			});
-		}, 400);
-	});
+	filter: VerificationEntryFilterInput = {},
+	order: VerificationEntrySortInput[] = []
+) {
+	try {
+		const ret = await new VerificationEntriesStore().fetch({
+			variables: { ...getPageInfo(page, pageSize), filter: filter, order }
+		});
+		return queryResult(ret, ret.data?.verificationEntries);
+	} catch (error) {
+		return gqlError(error);
+	}
 }
 
-export async function readBrowseDataById(id: string): Promise<IQuerryResultType<IBrowseData>> {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				success: true,
-				message: '',
-				data: {
-					id: nanoid(),
-					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
-					voterId: `VTR-${Math.floor(1000 + Math.random() * 9000)}`,
-					verificationType: verificationTypes[Math.floor(Math.random() * verificationTypes.length)],
-					status: statuses[Math.floor(Math.random() * statuses.length)],
-					notes: `Note for voter 1`,
-					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)],
-					gender: 'Male'
-				}
-			});
-		}, 300);
-	});
+export async function readBrowseDataById(id: string) {
+	try {
+		const ret = await readBrowseData(1, 1, { id: { eq: +id } });
+		return getOne(ret, (x) => x!.items);
+	} catch (error) {
+		gqlError(error);
+	}
 }
 
 export async function readPollingStations(): Promise<IQuerryResultType<any[]>> {

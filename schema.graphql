@@ -1,0 +1,533 @@
+type AccessToken {
+  expiry: DateTime!
+  token: String!
+}
+
+type CallResult {
+  code: Int!
+  message: String
+  success: Boolean!
+}
+
+type CallResultOfAccessToken {
+  code: Int!
+  message: String
+  result: AccessToken
+  success: Boolean!
+}
+
+type CallResultOfElectionGenderSplit__ {
+  code: Int!
+  message: String
+  result: [ElectionGenderSplit]
+  success: Boolean!
+}
+
+type CallResultOfElectionSummary {
+  code: Int!
+  message: String
+  result: ElectionSummary
+  success: Boolean!
+}
+
+type CallResultOfMe {
+  code: Int!
+  message: String
+  result: Me
+  success: Boolean!
+}
+
+"""Information about the offset pagination."""
+type CollectionSegmentInfo {
+  """
+  Indicates whether more items exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether more items exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+}
+
+input CreateElectionInput {
+  electionType: ElectionType!
+  endDate: DateTime!
+  name: String!
+  startDate: DateTime!
+}
+
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+scalar DateTime
+
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime]
+  lt: DateTime
+  lte: DateTime
+  neq: DateTime
+  ngt: DateTime
+  ngte: DateTime
+  nin: [DateTime]
+  nlt: DateTime
+  nlte: DateTime
+}
+
+input DeleteElectionInput {
+  id: Long!
+}
+
+type Election {
+  createdBy: String!
+  createdOn: DateTime!
+  electionType: ElectionType!
+  endDate: DateTime!
+  failedFemales: Int!
+  failedMales: Int!
+  hourlyBreakdown: [ElectionActivityByHour!]!
+  id: Long!
+  invalidVoters: Int!
+  manualFemales: Int!
+  manualMales: Int!
+  name: String!
+  numberOfActivities: Int!
+  numberOfDevices: Int!
+  numberOfFiles: Int!
+  numberOfPollingStations: Int!
+  revision: Int!
+  startDate: DateTime!
+  successfulFemales: Int!
+  successfulMales: Int!
+  totalFemales: Int!
+  totalMales: Int!
+  updatedBy: String!
+  updatedOn: DateTime
+  validVoters: Int!
+}
+
+type ElectionActivityByHour {
+  date: DateTime!
+  failed: Int!
+  manual: Int!
+  successful: Int!
+}
+
+input ElectionActivityByHourFilterInput {
+  and: [ElectionActivityByHourFilterInput!]
+  date: DateTimeOperationFilterInput
+  failed: IntOperationFilterInput
+  manual: IntOperationFilterInput
+  or: [ElectionActivityByHourFilterInput!]
+  successful: IntOperationFilterInput
+}
+
+input ElectionFilterInput {
+  and: [ElectionFilterInput!]
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  electionType: ElectionTypeOperationFilterInput
+  endDate: DateTimeOperationFilterInput
+  failedFemales: IntOperationFilterInput
+  failedMales: IntOperationFilterInput
+  hourlyBreakdown: ListFilterInputTypeOfElectionActivityByHourFilterInput
+  id: LongOperationFilterInput
+  invalidVoters: IntOperationFilterInput
+  manualFemales: IntOperationFilterInput
+  manualMales: IntOperationFilterInput
+  name: StringOperationFilterInput
+  numberOfActivities: IntOperationFilterInput
+  numberOfDevices: IntOperationFilterInput
+  numberOfFiles: IntOperationFilterInput
+  numberOfPollingStations: IntOperationFilterInput
+  or: [ElectionFilterInput!]
+  revision: IntOperationFilterInput
+  startDate: DateTimeOperationFilterInput
+  successfulFemales: IntOperationFilterInput
+  successfulMales: IntOperationFilterInput
+  totalFemales: IntOperationFilterInput
+  totalMales: IntOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+  validVoters: IntOperationFilterInput
+}
+
+type ElectionGenderSplit {
+  date: DateTime!
+  females: Int!
+  males: Int!
+  name: String!
+}
+
+input ElectionSortInput {
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  electionType: SortEnumType
+  endDate: SortEnumType
+  failedFemales: SortEnumType
+  failedMales: SortEnumType
+  id: SortEnumType
+  invalidVoters: SortEnumType
+  manualFemales: SortEnumType
+  manualMales: SortEnumType
+  name: SortEnumType
+  numberOfActivities: SortEnumType
+  numberOfDevices: SortEnumType
+  numberOfFiles: SortEnumType
+  numberOfPollingStations: SortEnumType
+  revision: SortEnumType
+  startDate: SortEnumType
+  successfulFemales: SortEnumType
+  successfulMales: SortEnumType
+  totalFemales: SortEnumType
+  totalMales: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+  validVoters: SortEnumType
+}
+
+type ElectionSummary {
+  counts: VoterSummaryCount!
+  date: DateTime!
+  name: String!
+  overTime: [HourActivitySummary!]!
+  verifications: VerificationSummary!
+}
+
+enum ElectionType {
+  BY_ELECTION
+  NATIONAL_ELECTION
+}
+
+input ElectionTypeOperationFilterInput {
+  eq: ElectionType
+  in: [ElectionType!]
+  neq: ElectionType
+  nin: [ElectionType!]
+}
+
+"""A segment of a collection."""
+type ElectionsCollectionSegment {
+  """A flattened list of the items."""
+  items: [Election!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+type HourActivitySummary {
+  failed: Int!
+  hour: String!
+  manual: Int!
+  successful: Int!
+}
+
+input IntOperationFilterInput {
+  eq: Int
+  gt: Int
+  gte: Int
+  in: [Int]
+  lt: Int
+  lte: Int
+  neq: Int
+  ngt: Int
+  ngte: Int
+  nin: [Int]
+  nlt: Int
+  nlte: Int
+}
+
+input ListFilterInputTypeOfElectionActivityByHourFilterInput {
+  all: ElectionActivityByHourFilterInput
+  any: Boolean
+  none: ElectionActivityByHourFilterInput
+  some: ElectionActivityByHourFilterInput
+}
+
+input LoginInput {
+  password: String!
+  username: String!
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+input LongOperationFilterInput {
+  eq: Long
+  gt: Long
+  gte: Long
+  in: [Long]
+  lt: Long
+  lte: Long
+  neq: Long
+  ngt: Long
+  ngte: Long
+  nin: [Long]
+  nlt: Long
+  nlte: Long
+}
+
+type Me {
+  firstName: String!
+  initials: String!
+  lastName: String!
+  middleName: String!
+  name: String!
+  permissions: [String!]!
+  profileImage: String!
+  role: String!
+  tags: [String!]!
+  username: String!
+}
+
+type Mutation {
+  createElection(input: CreateElectionInput): CallResult
+  deleteElection(input: DeleteElectionInput): CallResult
+  login(input: LoginInput): CallResultOfAccessToken
+  updateElection(input: UpdateElectionInput): CallResult
+  uploadFile(input: UploadFileInput): CallResult
+}
+
+type NameCountEntry {
+  count: Int!
+  name: String!
+}
+
+type Query {
+  electionSummary(id: Long!): CallResultOfElectionSummary!
+  elections(order: [ElectionSortInput!], skip: Int, take: Int, where: ElectionFilterInput): ElectionsCollectionSegment
+  me: CallResultOfMe
+  verificationEntries(order: [VerificationEntrySortInput!], skip: Int, take: Int, where: VerificationEntryFilterInput): VerificationEntriesCollectionSegment
+  verificationFiles(order: [VerificationFileSortInput!], skip: Int, take: Int, where: VerificationFileFilterInput): VerificationFilesCollectionSegment
+  verificationsByGender: CallResultOfElectionGenderSplit__!
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  contains: String
+  endsWith: String
+  eq: String
+  in: [String]
+  ncontains: String
+  nendsWith: String
+  neq: String
+  nin: [String]
+  nstartsWith: String
+  or: [StringOperationFilterInput!]
+  startsWith: String
+}
+
+input UpdateElectionInput {
+  electionType: ElectionType!
+  endDate: DateTime!
+  id: Long!
+  name: String!
+  startDate: DateTime!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input UploadFileInput {
+  file: Upload!
+}
+
+"""A segment of a collection."""
+type VerificationEntriesCollectionSegment {
+  """A flattened list of the items."""
+  items: [VerificationEntry!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+type VerificationEntry {
+  createdBy: String!
+  createdOn: DateTime!
+  date: DateTime!
+  file: VerificationFile!
+  fileId: Long!
+  gender: String!
+  id: Long!
+  notes: String!
+  pollingStationCode: String!
+  revision: Int!
+  status: String!
+  updatedBy: String!
+  updatedOn: DateTime
+  verificationType: VerificationType!
+  voterId: String!
+}
+
+input VerificationEntryFilterInput {
+  and: [VerificationEntryFilterInput!]
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  date: DateTimeOperationFilterInput
+  file: VerificationFileFilterInput
+  fileId: LongOperationFilterInput
+  gender: StringOperationFilterInput
+  id: LongOperationFilterInput
+  notes: StringOperationFilterInput
+  or: [VerificationEntryFilterInput!]
+  pollingStationCode: StringOperationFilterInput
+  revision: IntOperationFilterInput
+  status: StringOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+  verificationType: VerificationTypeOperationFilterInput
+  voterId: StringOperationFilterInput
+}
+
+input VerificationEntrySortInput {
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  date: SortEnumType
+  file: VerificationFileSortInput
+  fileId: SortEnumType
+  gender: SortEnumType
+  id: SortEnumType
+  notes: SortEnumType
+  pollingStationCode: SortEnumType
+  revision: SortEnumType
+  status: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+  verificationType: SortEnumType
+  voterId: SortEnumType
+}
+
+type VerificationFile {
+  createdBy: String!
+  createdOn: DateTime!
+  date: DateTime!
+  deviceId: String!
+  election: Election!
+  electionId: Long!
+  fileHash: String!
+  id: Long!
+  invalidVoterCount: Int!
+  notes: String!
+  numberFailed: Int!
+  numberManual: Int!
+  numberSuccessful: Int!
+  pollingStationCode: String!
+  processTime: Int!
+  revision: Int!
+  status: VerificationFileStatus!
+  updatedBy: String!
+  updatedOn: DateTime
+  uploadeBy: String!
+  voterCount: Int!
+}
+
+input VerificationFileFilterInput {
+  and: [VerificationFileFilterInput!]
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  date: DateTimeOperationFilterInput
+  deviceId: StringOperationFilterInput
+  election: ElectionFilterInput
+  electionId: LongOperationFilterInput
+  fileHash: StringOperationFilterInput
+  id: LongOperationFilterInput
+  invalidVoterCount: IntOperationFilterInput
+  notes: StringOperationFilterInput
+  numberFailed: IntOperationFilterInput
+  numberManual: IntOperationFilterInput
+  numberSuccessful: IntOperationFilterInput
+  or: [VerificationFileFilterInput!]
+  pollingStationCode: StringOperationFilterInput
+  processTime: IntOperationFilterInput
+  revision: IntOperationFilterInput
+  status: VerificationFileStatusOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+  uploadeBy: StringOperationFilterInput
+  voterCount: IntOperationFilterInput
+}
+
+input VerificationFileSortInput {
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  date: SortEnumType
+  deviceId: SortEnumType
+  election: ElectionSortInput
+  electionId: SortEnumType
+  fileHash: SortEnumType
+  id: SortEnumType
+  invalidVoterCount: SortEnumType
+  notes: SortEnumType
+  numberFailed: SortEnumType
+  numberManual: SortEnumType
+  numberSuccessful: SortEnumType
+  pollingStationCode: SortEnumType
+  processTime: SortEnumType
+  revision: SortEnumType
+  status: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+  uploadeBy: SortEnumType
+  voterCount: SortEnumType
+}
+
+enum VerificationFileStatus {
+  FAILED
+  PENDING
+  PROCESSED
+}
+
+input VerificationFileStatusOperationFilterInput {
+  eq: VerificationFileStatus
+  in: [VerificationFileStatus!]
+  neq: VerificationFileStatus
+  nin: [VerificationFileStatus!]
+}
+
+"""A segment of a collection."""
+type VerificationFilesCollectionSegment {
+  """A flattened list of the items."""
+  items: [VerificationFile!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+type VerificationSummary {
+  failed: [NameCountEntry!]!
+  manual: [NameCountEntry!]!
+  successful: [NameCountEntry!]!
+}
+
+enum VerificationType {
+  FACE
+  FINGER
+  MANUAL
+}
+
+input VerificationTypeOperationFilterInput {
+  eq: VerificationType
+  in: [VerificationType!]
+  neq: VerificationType
+  nin: [VerificationType!]
+}
+
+type VoterSummaryCount {
+  invalidVoters: Int!
+  numberOfActivities: Int!
+  numberOfDevices: Int!
+  numberOfFiles: Int!
+  numberOfPollingStations: Int!
+  validVoters: Int!
+}

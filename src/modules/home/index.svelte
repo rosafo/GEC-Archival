@@ -62,6 +62,7 @@
 	import Echart from '$cmps/ui/echart.svelte';
 	import PageLoader from '$cmps/ui/pageLoader.svelte';
 	import { userInfo } from '$svc/auth';
+	import dayjs from 'dayjs';
 
 	interface IElectionToShow extends IElection {
 		isFirst?: boolean;
@@ -70,26 +71,34 @@
 
 	let electionsData: IElection[] = [];
 	let displayedElections: IElectionToShow[] = [];
-	let startIndex = 0;
+	let startIndex = 1;
 	let hasMoreProjects = true;
 	let isLoadingProjects = true;
 	let openForm = false;
 	let electionBrokeDown = {} as echarts.EChartsOption;
 	let isLoadingChart = true;
 	$: canAddElection = $userInfo?.permissions.includes('CanAddElection');
-	$: incrementCount = canAddElection ? 4 : 5;
+	$: incrementCount = canAddElection ? 3 : 4;
 
-	async function loadElections() {
+	async function loadElections(page: number, take: number) {
 		try {
 			if (!isLoadingProjects) isLoadingProjects = true;
-			const ret = await readElections();
+			const ret = await readElections(page, take);
 			if (!ret.success) {
 				showError(ret.message);
 				return;
 			}
-			if (ret.data.length) {
-				electionsData = ret.data;
+			if (ret.data.items?.length) {
+				const newData = ret.data.items;
+
+				const filteredNewData = newData.filter(
+					(newItem) => !electionsData.some((existingItem) => existingItem.id === newItem.id)
+				);
+
+				electionsData = [...electionsData, ...filteredNewData];
+
 				loadInitialElectionEntries();
+				hasMoreProjects = ret.data.pageInfo.hasNextPage;
 			}
 		} catch (error: any) {
 			showError(error?.message || error);
@@ -99,17 +108,18 @@
 	}
 
 	function loadInitialElectionEntries() {
-		electionsData.sort((a, b) => b.year - a.year);
+		electionsData.sort((a, b) => b.startDate.getTime() - a.endDate.getTime());
+
 		displayedElections = [
 			{
 				isFirst: true,
-				id: '',
+				id: Math.floor(1000 + Math.random() * 9000),
 				name: 'Add Election'
 			} as IElectionToShow,
-			...electionsData.slice(startIndex, startIndex + incrementCount),
+			...electionsData.map((x) => ({ ...x, isLast: false, isFirst: false })),
 			{
 				isLast: true,
-				id: '1000',
+				id: Math.floor(1000 + Math.random() * 9000),
 				name: 'Get More Elections'
 			} as IElectionToShow
 		];
@@ -119,44 +129,35 @@
 				(x) => !(x.isFirst && x.name === 'Add Election')
 			);
 		}
-
-		startIndex += incrementCount;
-		hasMoreProjects = startIndex < electionsData.length;
 	}
 
 	function loadMoreEntries() {
 		if (!hasMoreProjects) return;
-
-		const moreProjects = electionsData.slice(startIndex, startIndex + incrementCount);
-		displayedElections = [
-			...displayedElections.slice(0, -1),
-			...moreProjects,
-			{
-				isLast: true,
-				id: '10000',
-				name: 'Get More Elections'
-			} as IElectionToShow
-		];
-		startIndex += incrementCount;
-		hasMoreProjects = startIndex < electionsData.length;
+		startIndex++;
+		loadElections(startIndex, incrementCount);
 	}
 
 	function handleClose() {
 		openForm = false;
-		startIndex = 0;
+		startIndex = 1;
 		electionsData = [];
 		displayedElections = [];
-		loadElections();
+		loadElections(startIndex, incrementCount);
 	}
 
 	onMount(async () => {
-		loadElections();
+		loadElections(startIndex, incrementCount);
 		try {
 			const ret = await readElectionGraph();
-			if (ret.message) {
-				showError(ret.message);
+			if (!ret?.success) {
+				showError(ret?.message || '');
 			} else {
-				electionBrokeDown = electionsToPlot(ret.data);
+				const d = ret.data.result?.map((c) => ({
+					year: Number(dayjs(c?.date).format('YYYY')),
+					females: c?.females,
+					males: c?.males
+				})) as IElectionToPlot[];
+				electionBrokeDown = electionsToPlot(d);
 			}
 		} catch (error: any) {
 			showError(error?.message || error);
@@ -229,10 +230,13 @@
 							<div>
 								<div class="flex items-center gap-1">
 									<span class="">{project.name}</span>
+									<span class="text-gray-500 tracking-tighter antialiased text-xs"
+										>({project.electionType})</span
+									>
 									<iconify-icon icon="fluent:arrow-right-24-filled" />
 								</div>
 								<p class="text-gray-500 text-start text-sm">
-									{`${getMonthName(project.month)} ${project.year}`}
+									{`${dayjs(project.startDate).format('DD-MMM-YYYY')} to ${dayjs(project.endDate).format('DD-MMM-YYYY')}`}
 								</p>
 							</div>
 						</a>

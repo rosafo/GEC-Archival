@@ -1,0 +1,19 @@
+query AuthUser {
+	me {
+		code
+		message
+		success
+		result {
+			firstName
+			initials
+			lastName
+			middleName
+			name
+			permissions
+			profileImage
+			role
+			tags
+			username
+		}
+	}
+}

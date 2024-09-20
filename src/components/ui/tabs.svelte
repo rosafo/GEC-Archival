@@ -5,6 +5,7 @@
 		component: any;
 		icon?: string;
 		isClosable?: boolean;
+		props?: any;
 	}
 </script>
 
@@ -46,8 +47,8 @@
 						class:hidden={!tab.isClosable}
 						on:click={(e) => {
 							// if (tabs.length == 2) renderId++
-								// removeItem(tab.id);
-								dispatch('removeItem', { tabId: tab.id });
+							// removeItem(tab.id);
+							dispatch('removeItem', { tabId: tab.id });
 							e.stopPropagation();
 						}}><iconify-icon icon="iconamoon:close-thin" style="font-size: 18px;" /></button
 					>
@@ -59,7 +60,7 @@
 	<div class="p-4 w-full h-full">
 		{#each tabs as tab (tab.id)}
 			<div class:hidden={activeTab !== tab.id} class="w-full h-full">
-				<svelte:component this={tab.component} on:addTab/>
+				<svelte:component this={tab.component} on:addTab {...tab.props} />
 			</div>
 		{/each}
 	</div>

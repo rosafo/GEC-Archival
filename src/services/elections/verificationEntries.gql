@@ -1,0 +1,25 @@
+query VerificationEntries(
+	$skip: Int
+	$take: Int
+	$filter: VerificationEntryFilterInput
+	$order: [VerificationEntrySortInput!]
+) {
+	verificationEntries(skip: $skip, take: $take, where: $filter, order: $order) {
+		totalCount
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+		}
+		items {
+			date
+			fileId
+			gender
+			id
+			notes
+			pollingStationCode
+			status
+			verificationType
+			voterId
+		}
+	}
+}

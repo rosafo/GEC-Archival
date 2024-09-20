@@ -6,21 +6,33 @@
 	import Button from '$cmps/ui/button.svelte';
 	import { showError, showInfo } from '$lib/utils';
 	import { createElection } from '$svc/elections';
+	import dayjs from 'dayjs';
 	// import { userInfo } from '$svc/auth';
 	import { createEventDispatcher } from 'svelte';
 	import * as z from 'zod';
 	const schema = z.object({
 		name: z.string().min(1, 'Required'),
-		month: z.number({ invalid_type_error: 'Required', required_error: 'Required' }),
-		year: z.number({ invalid_type_error: 'Required', required_error: 'Required' })
+		startDate: z.string().min(1, 'Required'),
+		endDate: z.string().min(1, 'Required'),
+		electionType: z.string().min(1, 'Required')
 	});
 	let busy = false;
+	let formData = {
+		name: '',
+		startDate: null,
+		endDate: null,
+		electionType: ''
+	};
 	const dispatch = createEventDispatcher();
 	async function handleSubmit({ detail }: CustomEvent) {
 		try {
 			busy = true;
 			const { values } = detail;
-			const ret = await createElection({ ...values });
+			const ret = await createElection({
+				...values,
+				startDate: new Date(values.startDate),
+				endDate: new Date(values.endDate)
+			});
 			if (!ret.success) {
 				showError(ret.message);
 				return;
@@ -35,29 +47,19 @@
 	}
 </script>
 
-<Form {schema} on:submit={handleSubmit} class="flex flex-col gap-6">
+<Form {schema} initialValues={formData} on:submit={handleSubmit} class="flex flex-col gap-6">
 	<TextField label="Name" name="name" required />
+	<DateField label="Start Date" name="startDate" required />
+	<DateField label="End Date" name="endDate" required />
 	<SelectField
-		label="Month"
-		name="month"
-		required
+		label="Election Type"
+		name="electionType"
 		options={[
-			{ value: 1, label: 'January' },
-			{ value: 2, label: 'February' },
-			{ value: 3, label: 'March' },
-			{ value: 4, label: 'April' },
-			{ value: 5, label: 'May' },
-			{ value: 6, label: 'June' },
-			{ value: 7, label: 'July' },
-			{ value: 8, label: 'August' },
-			{ value: 9, label: 'September' },
-			{ value: 10, label: 'October' },
-			{ value: 11, label: 'November' },
-			{ value: 12, label: 'December' }
+			{ value: 'NATIONAL_ELECTION', label: 'National Election' },
+			{ value: 'BY_ELECTION', label: 'By Election' }
 		]}
+		required
 	/>
-	<TextField label="Year" name="year" type="number" required />
-	<!-- <DateField label="Month" name="month"/> -->
 	<div class="flex justify-end w-fit">
 		<Button
 			label="Submit"

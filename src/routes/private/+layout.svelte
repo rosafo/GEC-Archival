@@ -1,16 +1,32 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Topbar from '$cmps/layout/topbar.svelte';
+	import AlertDialog from '$cmps/ui/AlertDialog.svelte';
 	import Breadcrumbs from '$cmps/ui/breadcrumbs.svelte';
 	import { activePage } from '$data/appStore';
 	import { breadCrumb } from '$lib/utils';
-	import { userInfo } from '$svc/auth';
+	import { authInit, refreshToken, signout, userInfo } from '$svc/auth';
+	import { onDestroy, onMount } from 'svelte';
 	let showAlert = false;
+	let interval: NodeJS.Timer;
+
 	$: activeBreadCrumb = $breadCrumb[$breadCrumb.length - 1].title;
 	function optionClicked({ detail }: any) {
 		const { index, path } = detail;
 		breadCrumb.removeFromFront(index);
 		// goto(path);
 	}
+
+	function logout() {
+		signout();
+		goto('/');
+	}
+
+	onMount(async () => {
+		await authInit();
+		interval = setInterval(refreshToken, 10000);
+	});
+	onDestroy(() => clearInterval(interval));
 </script>
 
 <div class="w-screen h-screen overflow-hidden bg-gray-50/50">
@@ -45,3 +61,9 @@
 	</div>
 	<!-- </div> -->
 </div>
+<AlertDialog
+	bind:open={showAlert}
+	message="Are you sure you want to sign out?"
+	on:cancel={() => (showAlert = false)}
+	on:yes={logout}
+/>

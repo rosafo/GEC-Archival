@@ -132,17 +132,17 @@
 	onMount(async () => {
 		try {
 			const ret = await readElectionDashboard(electionId);
-			if (!ret.success) {
-				showError(ret.message);
+			if (!ret?.success) {
+				showError(ret?.message || '');
 				return;
 			}
 
-			const { counts, verifications, overTime } = ret.data;
-			electionCounts = counts;
-			successfulVerification = drawBarChart(verifications.successful);
-			failedVerification = drawBarChart(verifications.failed);
-			manualVerification = drawBarChart(verifications.manual);
-			breakDown = drawStackedLineChart(overTime);
+			const data = ret.data.result;
+			electionCounts = data?.counts as IELecectionCount;
+			successfulVerification = drawBarChart(data?.verifications.successful as IBarChartData[]);
+			failedVerification = drawBarChart(data?.verifications.failed as IBarChartData[]);
+			manualVerification = drawBarChart(data?.verifications.manual as IBarChartData[]);
+			breakDown = drawStackedLineChart(data?.overTime as ILineChartData[]);
 		} catch (error: any) {
 			showError(error?.message || error);
 		} finally {
