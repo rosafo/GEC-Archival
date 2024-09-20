@@ -1,4 +1,4 @@
-<!-- <script lang="ts">
+<script lang="ts">
 	import FileUpload from '$cmps/forms/fileUpload.svelte';
 	import Form from '$cmps/forms/form.svelte';
 	import Button from '$cmps/ui/button.svelte';
@@ -14,4 +14,4 @@
 		<FileUpload name="upload" />
 	</div>
 	<Button label="Upload" type="submit" {busy} otherClasses="bg-primary-500 text-white border-none hover:bg-primary-600" />
-</Form> -->
+</Form>
