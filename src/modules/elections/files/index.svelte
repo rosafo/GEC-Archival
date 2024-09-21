@@ -3,13 +3,20 @@
 
 	export interface IFilesData {
 		date: Date;
-		id: string;
-		uploadBy: string;
-		pollingStation: string;
-		numberSuccessful: number;
+		deviceId: string;
+		electionId: number;
+		fileHash: string;
+		id: number;
+		invalidVoterCount: number;
+		notes: string;
 		numberFailed: number;
 		numberManual: number;
-		deviceId: string;
+		numberSuccessful: number;
+		pollingStationCode: string;
+		processTime: number;
+		status: '';
+		voterCount: VerificationFileStatus$options;
+		uploadeBy: string;
 	}
 	const columns: ITableColumn[] = [
 		{
@@ -24,14 +31,14 @@
 			plugins: {
 				sort: { disable: true }
 			},
-			accessor: (row: IFilesData) => row.uploadBy || ''
+			accessor: (row: IFilesData) => row.uploadeBy || ''
 		},
 		{
-			header: 'Polling Station',
+			header: 'Polling Station Code',
 			plugins: {
 				sort: { disable: true }
 			},
-			accessor: (row: IFilesData) => row.pollingStation || ''
+			accessor: (row: IFilesData) => row.pollingStationCode || ''
 		},
 		{
 			header: 'No. of Success',
@@ -65,8 +72,24 @@
 	async function read(skip?: number, take?: number, defn?: TableFilter) {
 		const filterValues = defn?.filter as IFileFilterValues;
 		const search = defn?.search;
-		let filterOptions = {} as any;
-		console.log(search, filterValues);
+		let filterOptions = {} as VerificationFileFilterInput;
+		// console.log(search, filterValues);
+		if (search) {
+			filterOptions = {
+				or: [
+					{ deviceId: { contains: search } },
+					{ pollingStationCode: { contains: search } },
+					{ uploadeBy: { contains: search } }
+				]
+			};
+		}
+		if (filterValues && filterValues.hasOwnProperty('deviceId')) {
+			filterOptions = {
+				...filterOptions,
+				deviceId: { contains: filterValues.deviceId },
+				uploadeBy: { contains: filterValues.uploadedBy }
+			};
+		}
 		return readFilesData(skip, take);
 	}
 </script>
@@ -79,6 +102,7 @@
 	import { readFilesData, readPollingStations, readUploadUsers } from '$svc/elections';
 	import Editor from './editor.svelte';
 	import FilterOptions, { type IFileFilterValues } from './filterOptions.svelte';
+	import type { VerificationFileFilterInput, VerificationFileStatus$options } from '$houdini';
 
 	let functionToRun = read;
 	let reloadData = 0;

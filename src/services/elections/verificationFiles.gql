@@ -1,0 +1,31 @@
+query VerificationFiles(
+	$skip: Int
+	$take: Int
+	$filter: VerificationFileFilterInput
+	$order: [VerificationFileSortInput!]
+) {
+	verificationFiles(skip: $skip, take: $take, where: $filter, order: $order) {
+		totalCount
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+		}
+		items {
+			date
+			deviceId
+			electionId
+			fileHash
+			id
+			invalidVoterCount
+			notes
+			numberFailed
+			numberManual
+			numberSuccessful
+			pollingStationCode
+			processTime
+			status
+			voterCount
+			uploadeBy
+		}
+	}
+}

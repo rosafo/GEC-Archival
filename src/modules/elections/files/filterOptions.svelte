@@ -1,7 +1,6 @@
 <script lang="ts" context="module">
 	export interface IFileFilterValues {
 		dateRange: string;
-		pollingStation: string;
 		deviceId: string;
 		uploadedBy: string;
 	}
@@ -22,7 +21,7 @@
 	export let open = false;
 	export let filterValues = {
 		dateRange: '',
-		pollingStation: '',
+		// pollingStation: '',
 		deviceId: '',
 		uploadedBy: ''
 	};
@@ -67,7 +66,7 @@
 					}}
 				/>
 
-				<SelectField
+				<!-- <SelectField
 					label="Polling Stations"
 					name="pollingStation"
 					options={filters.pollingStations}
@@ -78,7 +77,7 @@
 							handleChange('', 'pollingStation');
 						}
 					}}
-				/>
+				/> -->
 			</div>
 		</Form>
 	</AccordionItem>
