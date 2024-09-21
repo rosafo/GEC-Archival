@@ -1,5 +1,7 @@
 node_modules
 
+$houdini
+
 # Output
 .output
 .vercel

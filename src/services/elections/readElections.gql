@@ -1,0 +1,21 @@
+query ReadElections(
+	$skip: Int
+	$take: Int
+	$filter: ElectionFilterInput
+	$order: [ElectionSortInput!]
+) {
+	elections(skip: $skip, take: $take, where: $filter, order: $order) {
+		items {
+			electionType
+			endDate
+			id
+			name
+			startDate
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+		}
+		totalCount
+	}
+}

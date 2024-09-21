@@ -1,0 +1,12 @@
+query ReadGenderVerfications {
+	verificationsByGender {
+		message
+		success
+		result {
+			date
+			females
+			males
+			name
+		}
+	}
+}

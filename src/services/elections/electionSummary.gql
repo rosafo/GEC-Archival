@@ -1,0 +1,39 @@
+query ReadElectionSummary($id: Long!) {
+	electionSummary(id: $id) {
+		code
+		message
+		success
+		result {
+			counts {
+				invalidVoters
+				numberOfActivities
+				numberOfDevices
+				numberOfFiles
+				numberOfPollingStations
+				validVoters
+			}
+			date
+			name
+			overTime {
+				failed
+				hour
+				manual
+				successful
+			}
+			verifications {
+				failed {
+					count
+					name
+				}
+				manual {
+					count
+					name
+				}
+				successful {
+					count
+					name
+				}
+			}
+		}
+	}
+}

@@ -3,6 +3,7 @@
 	// import logo from '$assets/images/logo1.png';
 	import { page } from '$app/stores';
 	import { extractRedirectToRoute } from '$lib/utils';
+	import { login } from '$svc/auth';
 
 	const bgImageUrl = '/archive.jpg';
 	const logo = '/ec_logo.png';
@@ -21,17 +22,18 @@
 	async function signIn() {
 		try {
 			busy = true;
-			const d = { email: formData.username, password: formData.password };
 			// await fetch('/login', {
 			// 	method: 'POST',
 			// 	body: JSON.stringify(d)
 			// });
+			await login(formData.username, formData.password);
+
 			const redirect = extractRedirectToRoute($page.url.search);
 			if (redirect) {
 				goto(redirect);
 				return;
 			}
-			goto('/dashboard');
+			goto('/private/home');
 		} finally {
 			busy = false;
 		}
@@ -59,7 +61,7 @@
 					<div>
 						<div class="justify-center grid">
 							<div class="rounded-full border-2 p-5 border-indigo-600 shadow-md shadow-gray-400">
-								<img class="w-32" src={logo} alt="Logo" loading="lazy"/>
+								<img class="w-32" src={logo} alt="Logo" loading="lazy" />
 							</div>
 						</div>
 						<div class="text-center">
@@ -83,16 +85,17 @@
 							<form class="space-y-6" on:submit|preventDefault={signIn}>
 								<div>
 									<label for="username" class="block text-sm font-medium leading-6 text-gray-900"
-										>Email</label
+										>Username</label
 									>
 									<div class="mt-2">
 										<input
-											id="email"
-											name="email"
-											type="email"
-											autocomplete="email"
+											id="username"
+											name="username"
+											type="username"
+											autocomplete="username"
 											required
 											class="block px-3 w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+											bind:value={formData.username}
 										/>
 									</div>
 								</div>
@@ -109,6 +112,7 @@
 											autocomplete="current-password"
 											required
 											class="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+											bind:value={formData.password}
 										/>
 									</div>
 								</div>

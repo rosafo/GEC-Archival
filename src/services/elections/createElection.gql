@@ -1,0 +1,7 @@
+mutation CreateElection($input: CreateElectionInput) {
+	createElection(input: $input) {
+		code
+		success
+		message
+	}
+}
