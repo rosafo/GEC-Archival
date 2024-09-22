@@ -217,6 +217,21 @@ type ElectionsCollectionSegment {
   totalCount: Int!
 }
 
+input FloatOperationFilterInput {
+  eq: Float
+  gt: Float
+  gte: Float
+  in: [Float]
+  lt: Float
+  lte: Float
+  neq: Float
+  ngt: Float
+  ngte: Float
+  nin: [Float]
+  nlt: Float
+  nlte: Float
+}
+
 type HourActivitySummary {
   failed: Int!
   hour: String!
@@ -408,6 +423,9 @@ input VerificationEntrySortInput {
 }
 
 type VerificationFile {
+  allFailed: Int!
+  allManual: Int!
+  allSuccessful: Int!
   createdBy: String!
   createdOn: DateTime!
   date: DateTime!
@@ -422,7 +440,7 @@ type VerificationFile {
   numberManual: Int!
   numberSuccessful: Int!
   pollingStationCode: String!
-  processTime: Int!
+  processTime: Float!
   revision: Int!
   status: VerificationFileStatus!
   updatedBy: String!
@@ -432,6 +450,9 @@ type VerificationFile {
 }
 
 input VerificationFileFilterInput {
+  allFailed: IntOperationFilterInput
+  allManual: IntOperationFilterInput
+  allSuccessful: IntOperationFilterInput
   and: [VerificationFileFilterInput!]
   createdBy: StringOperationFilterInput
   createdOn: DateTimeOperationFilterInput
@@ -448,7 +469,7 @@ input VerificationFileFilterInput {
   numberSuccessful: IntOperationFilterInput
   or: [VerificationFileFilterInput!]
   pollingStationCode: StringOperationFilterInput
-  processTime: IntOperationFilterInput
+  processTime: FloatOperationFilterInput
   revision: IntOperationFilterInput
   status: VerificationFileStatusOperationFilterInput
   updatedBy: StringOperationFilterInput
@@ -458,6 +479,9 @@ input VerificationFileFilterInput {
 }
 
 input VerificationFileSortInput {
+  allFailed: SortEnumType
+  allManual: SortEnumType
+  allSuccessful: SortEnumType
   createdBy: SortEnumType
   createdOn: SortEnumType
   date: SortEnumType

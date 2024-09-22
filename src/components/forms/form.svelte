@@ -46,7 +46,14 @@
 		dispatch('change', { values: $data, isValid: $isValid, form: formInfo, data });
 	});
 
-	errors.subscribe((e) => console.log(e));
+	errors.subscribe((o) => {
+		for(let key in o) {
+			if (o[key]) {
+				console.log(o)
+				return
+			}
+		}
+	});
 	// $: ready && dispatch('change', { values: $data, form: formInfo });
 
 	// Dispatch 'change' and 'ready' events

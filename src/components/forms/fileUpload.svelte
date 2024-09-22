@@ -38,6 +38,7 @@
 	export let showError = false;
 	export let imageOnly = false; // when set, will restrict type to png and jpeg only
 	export let existingFileUrl = ''; // when set, will display the existing image.
+	export let fileValidateTypeDetectType: (source: File, type: string) => Promise<string>
 
 	const dispatch = createEventDispatcher();
 	let loaded = false;
@@ -118,6 +119,7 @@
 			{files}
 			{acceptedFileTypes}
 			credits={false}
+			{fileValidateTypeDetectType}
 		/>
 	{/if}
 

@@ -3,7 +3,8 @@ export default {
 	static: true,
 	defaultCachePolicy: 'NetworkOnly',
 	watchSchema: {
-		url: 'https://gec-archiving-api-demo.azurewebsites.net/graphql/'
+		url2: 'https://gec-archiving-api-demo.azurewebsites.net/graphql/',
+		url: 'http://localhost:5239/graphql/'
 	},
 	plugins: {
 		'houdini-svelte': {

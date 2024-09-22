@@ -2,7 +2,7 @@
 	import '../app.css';
 	import { Toaster } from 'svelte-french-toast';
 	import 'iconify-icon';
-	import { onMount } from 'svelte';
+	// import { onMount } from 'svelte';
 	import { userInfo } from '$svc/auth';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	import advancedFormat from 'dayjs/plugin/advancedFormat';

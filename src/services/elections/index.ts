@@ -3,10 +3,12 @@ import {
 	ReadElectionsStore,
 	ReadElectionSummaryStore,
 	ReadGenderVerficationsStore,
+	UploadFileStore,
 	VerificationEntriesStore,
 	type ElectionFilterInput,
 	type ElectionSortInput,
 	type ElectionType$options,
+	type UploadFile$input,
 	type VerificationEntryFilterInput,
 	type VerificationEntrySortInput
 } from '$houdini';
@@ -29,56 +31,15 @@ export interface IElection extends IElectionDto {
 	id: number;
 }
 
-const data: IElection[] = [
-	{
-		name: '2000 Election',
-		year: 2000,
-		month: 12,
-		id: '1'
-	},
-	{
-		name: '2004 Election',
-		year: 2004,
-		month: 12,
-
-		id: '2'
-	},
-	{
-		name: '2008 Election',
-		year: 2008,
-		month: 12,
-
-		id: '3'
-	},
-	{
-		name: '2012 Election',
-		year: 2012,
-		month: 12,
-
-		id: '4'
-	},
-	{
-		name: '2016 Election',
-		year: 2016,
-		month: 12,
-
-		id: '5'
-	},
-	{
-		name: '2020 Election',
-		year: 2020,
-		month: 12,
-
-		id: '6'
-	},
-	{
-		name: '2024 Election',
-		year: 2024,
-		month: 12,
-
-		id: '7'
+export async function uploadFile(input: UploadFile$input) {
+	try {
+		const ret = await new UploadFileStore().mutate(input)
+		return callResult(ret, ret.data?.uploadFile!)
+	} catch (error) {
+		return gqlError(error)
 	}
-];
+}
+
 export async function readElections(
 	page: number = 1,
 	pageSize: number = 10,
@@ -98,7 +59,7 @@ export async function readElections(
 export async function createElection(params: IElectionDto) {
 	try {
 		const ret = await new CreateElectionStore().mutate({ input: params });
-		return callResult(ret, ret.data?.createElection);
+		return callResult(ret, ret.data?.createElection!);
 	} catch (error) {
 		return gqlError(error);
 	}
