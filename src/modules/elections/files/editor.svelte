@@ -17,8 +17,8 @@
 	onMount(async () => {
 		try {
 			const ret = await readFileDataById(recordId);
-			if (!ret.success) {
-				showError(ret.message);
+			if (!ret?.success) {
+				showError(ret?.message || '');
 				return;
 			}
 			formData = { ...ret.data, date: dayjs(ret.data.date).format('DD-MM-YYYY') };

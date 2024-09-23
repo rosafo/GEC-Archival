@@ -83,14 +83,27 @@
 				]
 			};
 		}
-		if (filterValues && filterValues.hasOwnProperty('deviceId')) {
+		if (filterValues && filterValues.deviceId) {
 			filterOptions = {
 				...filterOptions,
-				deviceId: { contains: filterValues.deviceId },
+				deviceId: { contains: filterValues.deviceId }
+			};
+		}
+		if (filterValues && filterValues.uploadedBy) {
+			filterOptions = {
+				...filterOptions,
 				uploadeBy: { contains: filterValues.uploadedBy }
 			};
 		}
-		return readFilesData(skip, take);
+		if (filterValues && filterValues.dateRange) {
+			const dates = filterValues.dateRange.split(' to ');
+			const startDate = new Date(dates[0]);
+			const endDate = dayjs(dates.length > 1 ? dates[1] : dates[0])
+				.add(1, 'day')
+				.toDate();
+			filterOptions = { ...filterOptions, createdOn: { gte: startDate, lt: endDate } };
+		}
+		return readFilesData(skip, take, filterOptions);
 	}
 </script>
 

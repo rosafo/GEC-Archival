@@ -7,7 +7,7 @@
 		verificationType: string;
 		status: string;
 		notes: string;
-		pollingStation: string;
+		pollingStationCode: string;
 		id: string;
 		gender: string;
 	}
@@ -48,11 +48,11 @@
 			accessor: (row: IBrowseData) => row.status || ''
 		},
 		{
-			header: 'Polling Station',
+			header: 'Polling Station Code',
 			plugins: {
 				sort: { disable: true }
 			},
-			accessor: (row: IBrowseData) => row.pollingStation || ''
+			accessor: (row: IBrowseData) => row.pollingStationCode || ''
 		},
 		{
 			header: 'Notes',
@@ -63,31 +63,80 @@
 		}
 	];
 	async function read(skip?: number, take?: number, defn?: TableFilter) {
+		// const filterValues = defn?.filter as IBrowseFilterValues;
+		// const search = defn?.search;
+		// let filterOptions = {} as any;
+		// console.log(search, filterValues);
+
 		const filterValues = defn?.filter as IBrowseFilterValues;
 		const search = defn?.search;
-		let filterOptions = {} as any;
-		console.log(search, filterValues);
-		return readBrowseData(skip, take);
+		let filterOptions = {} as VerificationEntryFilterInput;
+		console.log(filterValues);
+		if (search) {
+			filterOptions = {
+				or: [
+					{ gender: { contains: search } },
+					{ pollingStationCode: { contains: search } },
+					{ status: { contains: search } },
+					{ notes: { contains: search } },
+					{ voterId: { contains: search } }
+
+					// { verificationType: { eq: search as VerificationType$options } }
+				]
+			};
+		}
+		if (filterValues && filterValues.voterId) {
+			filterOptions = {
+				...filterOptions,
+				voterId: { contains: filterValues.voterId }
+			};
+		}
+		if (filterValues && filterValues.verificationType) {
+			filterOptions = {
+				...filterOptions,
+				verificationType: { eq: filterValues.verificationType as VerificationType$options }
+			};
+		}
+		if (filterValues && filterValues.gender) {
+			filterOptions = {
+				...filterOptions,
+				gender: { contains: filterValues.gender }
+			};
+		}
+		if (filterValues && filterValues.pollingStationCode) {
+			filterOptions = {
+				...filterOptions,
+				pollingStationCode: { contains: filterValues.pollingStationCode }
+			};
+		}
+		if (filterValues && filterValues.dateRange) {
+			const dates = filterValues.dateRange.split(' to ');
+			const startDate = new Date(dates[0]);
+			const endDate = dayjs(dates.length > 1 ? dates[1] : dates[0])
+				.add(1, 'day')
+				.toDate();
+			filterOptions = { ...filterOptions, createdOn: { gte: startDate, lt: endDate } };
+		}
+		return readBrowseData(skip, take, filterOptions);
 	}
 </script>
 
 <script lang="ts">
 	import DataTable, { type TableFilter } from '$cmps/ui/dataTable.svelte';
 	import type { ITableColumn } from '$cmps/ui/table.svelte';
-	import { showError } from '$lib/utils';
-	import { onMount } from 'svelte';
-	import { readBrowseData, readPollingStations } from '$svc/elections';
+	import { readBrowseData } from '$svc/elections';
 	import Editor from './editor.svelte';
 	import FilterOptions, { type IBrowseFilterValues } from './filterOptions.svelte';
+	import type { VerificationEntryFilterInput, VerificationType$options } from '$houdini';
 
 	let functionToRun = read;
 	let reloadData = 0;
 	let query = '';
 	let formData: any = {};
 	let filters = {
-		statuses: ['Pending', 'Option 1'],
-		verificationTypes: ['Manual', 'Successful', 'Failed'],
-		pollingStations: [] as any[],
+		statuses: ['Successful', 'Failed'],
+		verificationTypes: ['FACE', 'FINGER', 'MANUAL'],
+		// pollingStations: [] as any[],
 		gender: ['Male', 'Female']
 	};
 
@@ -104,18 +153,18 @@
 		reloadData++;
 	}
 
-	onMount(async () => {
-		try {
-			const ret = await readPollingStations();
-			if (ret.success) {
-				filters = { ...filters, pollingStations: ret.data };
-			} else {
-				showError(ret.message || 'failed to load polling stations');
-			}
-		} catch (error: any) {
-			showError(error?.message || error);
-		}
-	});
+	// onMount(async () => {
+	// 	try {
+	// 		const ret = await readPollingStations();
+	// 		if (ret.success) {
+	// 			filters = { ...filters, pollingStations: ret.data };
+	// 		} else {
+	// 			showError(ret.message || 'failed to load polling stations');
+	// 		}
+	// 	} catch (error: any) {
+	// 		showError(error?.message || error);
+	// 	}
+	// });
 </script>
 
 <div class="flex-grow h-full w-full bg-white loginbox rounded-t-[5px] overflow-y-hidden">
