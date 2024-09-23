@@ -1,24 +1,24 @@
 import {
 	CreateElectionStore,
+	LogUploadStore,
 	ReadElectionsStore,
 	ReadElectionSummaryStore,
 	ReadGenderVerficationsStore,
 	UploadFileStore,
 	VerificationEntriesStore,
+	VerificationFilesStore,
 	type ElectionFilterInput,
 	type ElectionSortInput,
 	type ElectionType$options,
 	type UploadFile$input,
 	type VerificationEntryFilterInput,
-	type VerificationEntrySortInput
+	type VerificationEntrySortInput,
+	type VerificationFileFilterInput,
+	type VerificationFileSortInput
 } from '$houdini';
-import type { ICallResultType, IQuerryResultType, ITableDataProps } from '$lib/types';
-import type { IBrowseData } from '$modules/elections/browse/index.svelte';
-import type { IElectionDashoardTypes } from '$modules/elections/dashboard.svelte';
-import type { IFilesData } from '$modules/elections/files/index.svelte';
-import type { IElectionToPlot } from '$modules/home/index.svelte';
+import type { IQuerryResultType } from '$lib/types';
+
 import { callResult, getOne, getPageInfo, gqlError, queryResult } from '$svc/shared';
-import { nanoid } from 'nanoid';
 
 export interface IElectionDto {
 	name: string;
@@ -92,14 +92,6 @@ export async function readElectionById(id: string) {
 	}
 }
 
-function randomDate(start: Date, end: Date): Date {
-	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
-
-const statuses = ['Verified', 'Pending', 'Rejected', 'In Progress'];
-const verificationTypes = ['Finger', 'Face', 'Manual'];
-const pollingStations = ['Station 1', 'Station 2', 'Station 3', 'Station 4'];
-
 export async function readBrowseData(
 	page: number = 1,
 	pageSize: number = 10,
@@ -154,58 +146,24 @@ export async function readUploadUsers(): Promise<IQuerryResultType<any[]>> {
 export async function readFilesData(
 	page: number = 1,
 	pageSize: number = 10,
-	filter = {},
-	order: any[] = []
-): Promise<IQuerryResultType<ITableDataProps<IFilesData>>> {
-	return new Promise((resolve, reject) => {
-		const generateBrowseData = (): IFilesData[] => {
-			const data: IFilesData[] = [];
-			for (let i = 0; i < 15; i++) {
-				data.push({
-					id: nanoid(),
-					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
-					uploadBy: 'Jone Doe',
-					numberFailed: Math.floor(1000 + Math.random() * 9000),
-					numberManual: Math.floor(1000 + Math.random() * 9000),
-					numberSuccessful: Math.floor(1000 + Math.random() * 9000),
-					deviceId: `DV-${Math.floor(1000 + Math.random() * 9000)}`,
-					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)]
-				});
-			}
-			return data;
-		};
-		const d = generateBrowseData();
-		setTimeout(() => {
-			resolve({
-				success: true,
-				message: '',
-				data: {
-					pageInfo: { hasNextPage: false, hasPreviousPage: false },
-					totalCount: d.length,
-					items: d
-				}
-			});
-		}, 400);
-	});
+	filter: VerificationFileFilterInput = {},
+	order: VerificationFileSortInput[] = []
+) {
+	try {
+		const ret = await new VerificationFilesStore().fetch({
+			variables: { ...getPageInfo(page, pageSize), filter: filter, order }
+		});
+		return queryResult(ret, ret.data?.verificationFiles);
+	} catch (error) {
+		return gqlError(error);
+	}
 }
 
-export async function readFileDataById(id: string): Promise<IQuerryResultType<IFilesData>> {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				success: true,
-				message: '',
-				data: {
-					id: nanoid(),
-					date: randomDate(new Date(2023, 0, 1), new Date(2024, 0, 1)),
-					uploadBy: 'Jone Doe',
-					numberFailed: Math.floor(1000 + Math.random() * 9000),
-					numberManual: Math.floor(1000 + Math.random() * 9000),
-					numberSuccessful: Math.floor(1000 + Math.random() * 9000),
-					deviceId: `DV-${Math.floor(1000 + Math.random() * 9000)}`,
-					pollingStation: pollingStations[Math.floor(Math.random() * pollingStations.length)]
-				}
-			});
-		}, 300);
-	});
+export async function readFileDataById(id: string) {
+	try {
+		const ret = await readFilesData(1, 1, { id: { eq: +id } });
+		return getOne(ret, (x) => x!.items);
+	} catch (error) {
+		gqlError(error);
+	}
 }

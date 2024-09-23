@@ -153,12 +153,15 @@
 			if (!ret?.success) {
 				showError(ret?.message || '');
 			} else {
-				const d = ret.data.result?.map((c) => ({
-					year: Number(dayjs(c?.date).format('YYYY')),
-					females: c?.females,
-					males: c?.males
-				})) as IElectionToPlot[];
-				electionBrokeDown = electionsToPlot(d);
+				if (ret.data.result) {
+					const d = ret.data.result?.map((c) => ({
+						date: c?.date as Date,
+						females: c?.females || 0,
+						males: c?.males || 0,
+						name: c?.name || ''
+					})) as IElectionToPlot[];
+					electionBrokeDown = electionsToPlot(d);
+				}
 			}
 		} catch (error: any) {
 			showError(error?.message || error);

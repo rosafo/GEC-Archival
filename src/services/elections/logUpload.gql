@@ -1,0 +1,7 @@
+mutation LogUpload($input: UploadFileInput) {
+	uploadFile(input: $input) {
+		code
+		message
+		success
+	}
+}
