@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import Topbar from '$cmps/layout/topbar.svelte';
 	import AlertDialog from '$cmps/ui/AlertDialog.svelte';
 	import Breadcrumbs from '$cmps/ui/breadcrumbs.svelte';
 	import { activePage } from '$data/appStore';
+	import type { IMenuItem } from '$lib/types';
 	import { breadCrumb } from '$lib/utils';
 	import { authInit, refreshToken, signout, userInfo } from '$svc/auth';
 	import { onDestroy, onMount } from 'svelte';
@@ -27,6 +29,15 @@
 		interval = setInterval(refreshToken, 10000);
 	});
 	onDestroy(() => clearInterval(interval));
+
+	$: isAdminRoute = $page.url.pathname && $page.url.pathname.includes('/private/admin');
+
+	const adminLink: IMenuItem[] = [
+		{ title: 'Home', path: '/private/home' },
+		{ title: 'Roles', path: '/private/admin/roles' },
+		{ title: 'Reports Management', path: '/private/admin/reports' },
+		{ title: 'User Management', path: '/private/admin/users' }
+	];
 </script>
 
 <div class="w-screen h-screen overflow-hidden bg-gray-50/50">
@@ -38,16 +49,32 @@
 			</div>
 			<div class=" relative">
 				<div class="pattern-star z-[-1] opacity-50 lg:opacity-[80%] h-16">
-					<p
-						class="custom-container text-xl font-semibold tracking-tighter"
-						class:pt-2={$activePage.showBreadCrumb}
-						class:pt-5={!$activePage.showBreadCrumb}
-					>
-						{$activePage.title}
-					</p>
-					{#if $activePage.showBreadCrumb}
-						<div class="custom-container mb-4">
-							<Breadcrumbs options={$breadCrumb} {activeBreadCrumb} on:click={optionClicked} />
+					{#if !isAdminRoute}
+						<div>
+							<p
+								class="custom-container text-xl font-semibold tracking-tighter"
+								class:pt-2={$activePage.showBreadCrumb}
+								class:pt-5={!$activePage.showBreadCrumb}
+							>
+								{$activePage.title}
+							</p>
+							{#if $activePage.showBreadCrumb}
+								<div class="custom-container mb-4">
+									<Breadcrumbs options={$breadCrumb} {activeBreadCrumb} on:click={optionClicked} />
+								</div>
+							{/if}
+						</div>
+					{:else}
+						<div class="custom-container flex flex-wrap items-center h-full">
+							{#each adminLink as link}
+								{@const isActive = link.path === $page.url.pathname}
+								<a
+									href={link.path}
+									class=" px-4 py-2 h-full flex items-center border-b-[3px] tracking-tight font-medium"
+									class:inactive={!isActive}
+									class:active={isActive}>{link.title}</a
+								>
+							{/each}
 						</div>
 					{/if}
 				</div>
@@ -67,3 +94,12 @@
 	on:cancel={() => (showAlert = false)}
 	on:yes={logout}
 />
+
+<style>
+	.active {
+		@apply bg-[#168e6898] border-[#168e68];
+	}
+	.inactive {
+		@apply border-transparent hover:bg-[#168e6823];
+	}
+</style>

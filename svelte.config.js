@@ -22,7 +22,8 @@ const config = {
 			$data: path.resolve('.', 'src', 'data'),
 			$lib: path.resolve('.', 'src', 'lib'),
 			$assets: path.resolve('.', 'src', 'assets'),
-			$routes: path.resolve('.', 'src', 'routes')
+			$routes: path.resolve('.', 'src', 'routes'),
+			$cai: path.resolve('.', 'src', 'cai')
 		}
 	}
 };

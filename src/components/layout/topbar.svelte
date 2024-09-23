@@ -58,6 +58,9 @@
 					</div>
 
 					<DropdownDivider />
+					<DropdownItem href="/private/admin">Admin</DropdownItem>
+					<DropdownDivider />
+
 					<DropdownItem
 						on:click={() => {
 							dispatch('signout');
