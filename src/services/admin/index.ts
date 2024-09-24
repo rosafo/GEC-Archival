@@ -8,6 +8,7 @@ import {
 	DeleteUserStore,
 	GetReportParamsFromUploadStore,
 	MyReportsStore,
+	PrepareReportStore,
 	ReadPermissionsStore,
 	ReadRolesStore,
 	ReadUsersStore,
@@ -19,6 +20,7 @@ import {
 	type CreateUserInput,
 	type DeleteRoleInput,
 	type DeleteUserInput,
+	type GenerateReportInput,
 	type ReportDefinitionFilterInput,
 	type ReportDefinitionSortInput,
 	type RoleFilterInput,
@@ -33,7 +35,15 @@ import type { IQuerryResultType, ITableDataProps } from '$lib/types';
 import type { IReport } from '$modules/reports/index.svelte';
 import type { IRole } from '$modules/roles/index.svelte';
 import type { IUser } from '$modules/users/index.svelte';
-import { callResult, getOne, getPageInfo, gqlError, queryResult } from '$svc/shared';
+import {
+	callResult,
+	getOne,
+	getPageInfo,
+	gqlError,
+	queryResult,
+	result,
+	type ICallResult2
+} from '$svc/shared';
 
 export async function readRoles(
 	page: number = 1,
@@ -221,5 +231,14 @@ export async function getUserById(id: number) {
 		return getOne(ret, (x) => x!.items);
 	} catch (error) {
 		gqlError(error);
+	}
+}
+
+export async function prepareReport(input: GenerateReportInput) {
+	try {
+		const ret = await new PrepareReportStore().fetch({ variables: { input } });
+		return result(ret, ret.data?.prepareReport as ICallResult2<string>);
+	} catch (e) {
+		return gqlError(e);
 	}
 }

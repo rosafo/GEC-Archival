@@ -14,6 +14,7 @@
 	import ActionButton from '$cmps/ui/actionButton.svelte';
 	import PageLoader from '$cmps/ui/pageLoader.svelte';
 	import { showError } from '$lib/utils';
+	import { myReports } from '$svc/admin';
 	import { readReports } from '$svc/reports';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { scale } from 'svelte/transition';
@@ -24,14 +25,40 @@
 
 	onMount(async () => {
 		try {
-			const ret = await readReports();
+			const ret = await myReports();
 			if (!ret.success) {
 				showError(ret.message);
-				return;
+				return true;
 			}
-			reports = ret.data;
+			const reportList = ret.data
+				.map((x) => {
+					return {
+						...x,
+						title: x.name,
+						icon: '',
+						filterForm: x.filterForm ? JSON.parse(x.filterForm) : {}
+					};
+				})
+				.reduce((state, x) => {
+					if (!x.category) return state;
+					if (!state[x.category])
+						state[x.category] = {
+							category: x.category,
+							description: '',
+							items: []
+						};
+					state[x.category].items.push({
+						title: x.name,
+						description: x.description,
+						icon: '',
+						id: x.id,
+						filterForm: x.filterForm
+					});
+					return state;
+				}, {});
+			reports = Object.values(reportList); // todo: sort by the name of category
 		} catch (error: any) {
-			showError(error?.message || error);
+			showError(error.message || error);
 		} finally {
 			busy = false;
 		}
