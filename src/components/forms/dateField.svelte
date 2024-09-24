@@ -45,6 +45,9 @@
 
 		onChange(selectedDates: any, dateStr: any) {
 			// console.log('changed', { name, selectedDates, dateStr });
+			// const [selectedDates, dateStr] = event.detail;
+			// dispatch(selectedDates, dateStr);
+			dispatch('change', { selectedDates, dateStr });
 		}
 	};
 

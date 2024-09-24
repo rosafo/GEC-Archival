@@ -17,7 +17,6 @@
 	import { nanoid } from 'nanoid';
 	import { key } from './form';
 	import { fade } from 'svelte/transition';
-	import FileDisplay from './fileDisplay.svelte';
 	// import { accessToken } from "../../lib/services/keycloak"
 	// import { showError, showInfo } from "../../lib/utils"
 
@@ -39,22 +38,24 @@
 	export let imageOnly = false; // when set, will restrict type to png and jpeg only
 	export let existingFileUrl = ''; // when set, will display the existing image.
 	export let fileValidateTypeDetectType: (source: File, type: string) => Promise<string>
+	export let contextKey: symbol | null = null;
 
 	const dispatch = createEventDispatcher();
 	let loaded = false;
 	let busy = false;
 	let renderId = 0;
 
-	const { touched, errors, data, setData }: any = getContext(key);
+	const { touched, errors, data, setData }: any = getContext(contextKey || key);
+
 	let id = nanoid();
 
-	function onChange(err: any, fileItem: any) {
-		console.log(fileItem);
-		const { file } = fileItem;
+	// function onChange(err: any, fileItem: any) {
+	// 	console.log(fileItem);
+	// 	const { file } = fileItem;
 
-		setData({ ...$data, [name]: file });
-		dispatch('change', { name, value: file });
-	}
+	// 	setData({ ...$data, [name]: file });
+	// 	dispatch('change', { name, value: file });
+	// }
 
 	$: if (imageOnly && acceptedFileTypes?.length === 3) {
 		acceptedFileTypes = ['image/png', 'image/jpeg'];
@@ -63,20 +64,15 @@
 	$: error = $errors[name]?.join(', ');
 
 	let pond: any;
-	let uploadOk;
+	// let uploadOk;
 	const uploadServerConfig = {};
-	function clearFileUrl() {
-		// console.log("clearing... ", name)
-		// existingFileUrl = ""
-		dispatch('clearFileUrl');
-	}
 
 	onMount(async () => {
 		loaded = true;
 	});
 
 	function checkFiles(files: any) {
-		// console.log('update', files);
+		// console.log(files);
 		if (files.length > 1) {
 			const newFiles = files.map((x: any) => x.file);
 			setData({ ...$data, [name]: newFiles });
@@ -86,22 +82,32 @@
 
 			setData({ ...$data, [name]: file });
 			dispatch('change', { name, value: file });
+		} else if (files.length == 0) {
+			dispatch('change', null);
 		}
 	}
+
+	// function customFileTypeDetection(source: File, type: string) {
+	// 	return new Promise((resolve, reject) => {
+	// 		// Custom type detection
+	// 		const fileName = source.name;
+	// 		if (fileName.endsWith('.frx')) {
+	// 			resolve('.frx'); // MIME type for .frx files
+	// 		} else {
+	// 			resolve(type);
+	// 		}
+	// 	});
+	// }
 </script>
 
 <div class="flex flex-col flex-grow my-2 relative">
-	<!-- {#if busy}
-		<Progress step={1} />
-	{/if} -->
-	<!-- {#key renderId} -->
 	<label for={id} class="  font-medium text-gray-600 dark:text-white">
 		{label}
 		{#if required}
 			<span class="text-red-500 pl-1">*</span>
 		{/if}
 	</label>
-	{#if existingFileUrl}
+	<!-- {#if existingFileUrl}
 		<FileDisplay url={existingFileUrl} on:clearFileUrl={clearFileUrl} />
 	{:else}
 		<FilePond
@@ -121,8 +127,25 @@
 			credits={false}
 			{fileValidateTypeDetectType}
 		/>
-	{/if}
+	{/if} -->
 
+	<FilePond
+		{name}
+		required={true}
+		allowReplace={true}
+		instantUpload={false}
+		server={uploadServerConfig}
+		{allowMultiple}
+		allowRevert={true}
+		allowImagePreview={true}
+		allowImageResize={true}
+		bind:this={pond}
+		onupdatefiles={checkFiles}
+		{files}
+		{acceptedFileTypes}
+		{fileValidateTypeDetectType}
+		credits={false}
+	/>
 	{#if hasError}
 		<label
 			for={id}
@@ -140,23 +163,4 @@
 			/>
 		</label>
 	{/if}
-	<!-- <button class="btn btn-accent btn-sm w-20" on:click={reset}>Reset</button> -->
-	<!-- {/key} -->
 </div>
-
-<!-- onaddfile={(error, file) => {
-	if (!error) {
-		files = [...files, file];
-	}
-}} -->
-
-<!-- {#each files as file (file.id)}
-<div class="preview-item">
-	{#if file.preview}
-		<img src={file.preview} alt="Preview" style="max-width: 100px; max-height: 100px;" />
-	{:else}
-		<span>{file.filename}</span>
-	{/if}
-	<button on:click={() => FilePond.removeFile(file)}>Remove</button>
-</div>
-{/each} -->

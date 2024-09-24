@@ -88,4 +88,4 @@
 	});
 </script>
 
-<Tabs tabs={filteredTabs} bind:activeTab on:removeItem={removeTab} on:addTab={addTab} />
+<Tabs tabs={filteredTabs} bind:activeTab on:removeItem={removeTab} on:addTab={addTab} makeTabSticky/>

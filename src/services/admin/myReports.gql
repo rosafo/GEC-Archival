@@ -1,0 +1,5 @@
+query MyReports {
+  myReports {
+    id, name, description, filterForm, isActive, category
+  }
+}

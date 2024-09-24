@@ -89,7 +89,7 @@
 			<DropdownDivider />
 			<div class="h-full w-full">
 				<div class="flex flex-col h-full">
-					<div class="flex-grow w-full">
+					<div class="flex-grow w-full overflow-y-auto">
 						<slot />
 					</div>
 					<div
