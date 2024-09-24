@@ -1,0 +1,10 @@
+query GetReportParamsFromUpload($input: GetReportParametersFromFileInput!) {
+	reportParametersFromFile(input: $input) {
+		message
+		success
+		result {
+			name
+			type
+		}
+	}
+}

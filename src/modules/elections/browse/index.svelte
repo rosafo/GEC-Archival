@@ -71,7 +71,6 @@
 		const filterValues = defn?.filter as IBrowseFilterValues;
 		const search = defn?.search;
 		let filterOptions = {} as VerificationEntryFilterInput;
-		console.log(filterValues);
 		if (search) {
 			filterOptions = {
 				or: [

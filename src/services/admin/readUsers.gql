@@ -1,0 +1,26 @@
+query ReadUsers($skip: Int, $take: Int, $filter: UserFilterInput, $order: [UserSortInput!]) {
+	users(skip: $skip, take: $take, where: $filter, order: $order) {
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+		}
+		totalCount
+		items {
+			active
+			activeDashboardId
+			email
+			id
+			firstName
+			otherNames
+			role {
+				name
+				id
+			}
+      roleId
+			surname
+			tags
+			type
+			username
+		}
+	}
+}

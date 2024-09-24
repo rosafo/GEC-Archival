@@ -1,0 +1,7 @@
+mutation DeleteReport($command: DeleteReportInput!) {
+	deleteReport(input: $command) {
+		code
+		message
+		success
+	}
+}

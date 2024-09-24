@@ -113,13 +113,14 @@
 			const d = data.map((x) => ({
 				...getComponentConfigurations(x.name, x.type)
 			}));
-			definition = { ...definition, children: [...definition.children, ...d] };
+
+			definition = { ...definition, children: [...(definition.children ?? []), ...d] };
 		} else if (formData) {
 			const d = JSON.parse(formData);
 			if (Array.isArray(d)) {
-				definition = { ...definition, children: [...definition.children, ...d] };
+				definition = { ...definition, children: [...(definition.children ?? []), ...d] };
 			} else {
-				definition = { ...definition, children: [...definition.children, d] };
+				definition = { ...definition, children: [...(definition.children ?? []), d] };
 			}
 		}
 	});

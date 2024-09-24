@@ -1,0 +1,18 @@
+query ReadRoles($skip: Int, $take: Int, $filter: RoleFilterInput, $order: [RoleSortInput!]) {
+	roles(skip: $skip, take: $take, where: $filter, order: $order) {
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+		}
+		totalCount
+		items {
+			active
+			name
+			dashboards
+			id
+			permissions
+			reports
+      notes
+		}
+	}
+}

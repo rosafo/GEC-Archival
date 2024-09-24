@@ -3,6 +3,15 @@ type AccessToken {
   token: String!
 }
 
+input ActivateDashboardInput {
+  id: Long!
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
 type CallResult {
   code: Int!
   message: String
@@ -30,10 +39,24 @@ type CallResultOfElectionSummary {
   success: Boolean!
 }
 
+type CallResultOfListOfReportParameter {
+  code: Int!
+  message: String
+  result: [ReportParameter]
+  success: Boolean!
+}
+
 type CallResultOfMe {
   code: Int!
   message: String
   result: Me
+  success: Boolean!
+}
+
+type CallResultOfString {
+  code: Int!
+  message: String
+  result: String
   success: Boolean!
 }
 
@@ -50,11 +73,100 @@ type CollectionSegmentInfo {
   hasPreviousPage: Boolean!
 }
 
+input CreateDashboardInput {
+  definition: String!
+  description: String!
+  name: String!
+  viewer: String!
+}
+
 input CreateElectionInput {
   electionType: ElectionType!
   endDate: DateTime!
   name: String!
   startDate: DateTime!
+}
+
+input CreateReportInput {
+  description: String!
+  filterFormDefinition: String!
+  folder: String!
+  name: String!
+  reportFile: Upload!
+}
+
+input CreateRoleInput {
+  active: Boolean!
+  dashboards: [Long!]!
+  name: String!
+  notes: String!
+  permissions: [String!]!
+  reports: [Long!]!
+}
+
+input CreateUserInput {
+  active: Boolean!
+  email: String!
+  firstName: String!
+  lastName: String!
+  otherNames: String!
+  roleId: Long!
+  tags: [String!]!
+  username: String!
+}
+
+type Dashboard {
+  active: Boolean!
+  createdBy: String!
+  createdOn: DateTime!
+  description: String!
+  formDefinition: JsonDocument
+  id: Long!
+  name: String!
+  revision: Int!
+  updatedBy: String!
+  updatedOn: DateTime
+  viewer: String!
+}
+
+input DashboardFilterInput {
+  active: BooleanOperationFilterInput
+  and: [DashboardFilterInput!]
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  description: StringOperationFilterInput
+  formDefinition: JsonDocumentFilterInput
+  id: LongOperationFilterInput
+  name: StringOperationFilterInput
+  or: [DashboardFilterInput!]
+  revision: IntOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+  viewer: StringOperationFilterInput
+}
+
+input DashboardSortInput {
+  active: SortEnumType
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  description: SortEnumType
+  formDefinition: JsonDocumentSortInput
+  id: SortEnumType
+  name: SortEnumType
+  revision: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+  viewer: SortEnumType
+}
+
+"""A segment of a collection."""
+type DashboardsCollectionSegment {
+  """A flattened list of the items."""
+  items: [Dashboard!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
 }
 
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
@@ -75,7 +187,27 @@ input DateTimeOperationFilterInput {
   nlte: DateTime
 }
 
+input DeactivateDashboardInput {
+  id: Long!
+}
+
+input DeleteDashboardInput {
+  id: Long!
+}
+
 input DeleteElectionInput {
+  id: Long!
+}
+
+input DeleteReportInput {
+  id: Long!
+}
+
+input DeleteRoleInput {
+  id: Long!
+}
+
+input DeleteUserInput {
   id: Long!
 }
 
@@ -217,6 +349,49 @@ type ElectionsCollectionSegment {
   totalCount: Int!
 }
 
+enum EventType {
+  ERROR
+  INFORMATION
+  WARNING
+}
+
+input EventTypeOperationFilterInput {
+  eq: EventType
+  in: [EventType!]
+  neq: EventType
+  nin: [EventType!]
+}
+
+input FloatOperationFilterInput {
+  eq: Float
+  gt: Float
+  gte: Float
+  in: [Float]
+  lt: Float
+  lte: Float
+  neq: Float
+  ngt: Float
+  ngte: Float
+  nin: [Float]
+  nlt: Float
+  nlte: Float
+}
+
+input GenerateReportInput {
+  filter: JSON
+  outputFormat: OutputFormat!
+  reportId: Long!
+  userId: Long
+}
+
+input GetReportParametersFromFileInput {
+  reportFile: Upload!
+}
+
+input GetReportParametersInput {
+  definition: String!
+}
+
 type HourActivitySummary {
   failed: Int!
   hour: String!
@@ -239,11 +414,69 @@ input IntOperationFilterInput {
   nlte: Int
 }
 
+scalar JSON
+
+type JsonDocument {
+  rootElement: JSON!
+}
+
+input JsonDocumentFilterInput {
+  and: [JsonDocumentFilterInput!]
+  or: [JsonDocumentFilterInput!]
+  rootElement: JsonElementFilterInput
+}
+
+input JsonDocumentSortInput {
+  rootElement: SortEnumType
+}
+
+input JsonElementFilterInput {
+  and: [JsonElementFilterInput!]
+  or: [JsonElementFilterInput!]
+  valueKind: JsonValueKindOperationFilterInput
+}
+
+enum JsonValueKind {
+  ARRAY
+  FALSE
+  NULL
+  NUMBER
+  OBJECT
+  STRING
+  TRUE
+  UNDEFINED
+}
+
+input JsonValueKindOperationFilterInput {
+  eq: JsonValueKind
+  in: [JsonValueKind!]
+  neq: JsonValueKind
+  nin: [JsonValueKind!]
+}
+
 input ListFilterInputTypeOfElectionActivityByHourFilterInput {
   all: ElectionActivityByHourFilterInput
   any: Boolean
   none: ElectionActivityByHourFilterInput
   some: ElectionActivityByHourFilterInput
+}
+
+input ListLongOperationFilterInput {
+  all: LongOperationFilterInput
+  any: Boolean
+  none: LongOperationFilterInput
+  some: LongOperationFilterInput
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  any: Boolean
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+}
+
+input LockUserInput {
+  id: Long!
 }
 
 input LoginInput {
@@ -285,10 +518,28 @@ type Me {
 }
 
 type Mutation {
+  activateDashboard(input: ActivateDashboardInput): CallResult
+  createDashboard(input: CreateDashboardInput): CallResult
   createElection(input: CreateElectionInput): CallResult
+  createReport(input: CreateReportInput): CallResult
+  createRole(input: CreateRoleInput): CallResult
+  createUser(input: CreateUserInput): CallResult
+  deactivateDashboard(input: DeactivateDashboardInput): CallResult
+  deleteDashboard(input: DeleteDashboardInput): CallResult
   deleteElection(input: DeleteElectionInput): CallResult
+  deleteReport(input: DeleteReportInput): CallResult
+  deleteRole(input: DeleteRoleInput): CallResult
+  deleteUser(input: DeleteUserInput): CallResult
+  lockUser(input: LockUserInput): CallResult
   login(input: LoginInput): CallResultOfAccessToken
+  saveReport(input: SaveReportInput): CallResult
+  setActiveDashboard(input: SetActiveDashboardInput): CallResult
+  unlockUser(input: UnlockUserInput): CallResult
+  updateDashboard(input: UpdateDashboardInput): CallResult
   updateElection(input: UpdateElectionInput): CallResult
+  updateReport(input: UpdateReportInput): CallResult
+  updateRole(input: UpdateRoleInput): CallResult
+  updateUser(input: UpdateUserInput): CallResult
   uploadFile(input: UploadFileInput): CallResult
 }
 
@@ -297,13 +548,177 @@ type NameCountEntry {
   name: String!
 }
 
+enum OutputFormat {
+  EXCEL
+  HTML
+  JPEG
+  PDF
+}
+
 type Query {
+  dashboards(order: [DashboardSortInput!], skip: Int, take: Int, where: DashboardFilterInput): DashboardsCollectionSegment
   electionSummary(id: Long!): CallResultOfElectionSummary!
   elections(order: [ElectionSortInput!], skip: Int, take: Int, where: ElectionFilterInput): ElectionsCollectionSegment
   me: CallResultOfMe
+  myDashboards: [Dashboard!]!
+  myReports: [Report]
+  permissions: [String!]!
+  prepareReport(input: GenerateReportInput): CallResultOfString
+  reportParameters(input: GetReportParametersInput): CallResultOfListOfReportParameter
+  reportParametersFromFile(input: GetReportParametersFromFileInput): CallResultOfListOfReportParameter
+  reports(input: ReadReportsFilterInput!, order: [ReportDefinitionSortInput!], skip: Int, take: Int, where: ReportDefinitionFilterInput): ReportsCollectionSegment
+  roles(order: [RoleSortInput!], skip: Int, take: Int, where: RoleFilterInput): RolesCollectionSegment
+  userFeeds(order: [UserFeedSortInput!], skip: Int, take: Int, where: UserFeedFilterInput): UserFeedsCollectionSegment
+  userTags: [String!]!
+  users(order: [UserSortInput!], skip: Int, take: Int, where: UserFilterInput): UsersCollectionSegment
   verificationEntries(order: [VerificationEntrySortInput!], skip: Int, take: Int, where: VerificationEntryFilterInput): VerificationEntriesCollectionSegment
   verificationFiles(order: [VerificationFileSortInput!], skip: Int, take: Int, where: VerificationFileFilterInput): VerificationFilesCollectionSegment
   verificationsByGender: CallResultOfElectionGenderSplit__!
+}
+
+input ReadReportsFilterInput {
+  isActive: Boolean
+}
+
+type Report {
+  category: String!
+  description: String!
+  filterForm: String!
+  id: Long!
+  isActive: Boolean!
+  name: String!
+}
+
+type ReportDefinition {
+  active: Boolean!
+  category: String!
+  createdBy: String!
+  createdOn: DateTime!
+  description: String!
+  formDefinition: String!
+  id: Long!
+  name: String!
+  parameters: String!
+  reportDefinition: String!
+  revision: Int!
+  updatedBy: String!
+  updatedOn: DateTime
+}
+
+input ReportDefinitionFilterInput {
+  active: BooleanOperationFilterInput
+  and: [ReportDefinitionFilterInput!]
+  category: StringOperationFilterInput
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  description: StringOperationFilterInput
+  formDefinition: StringOperationFilterInput
+  id: LongOperationFilterInput
+  name: StringOperationFilterInput
+  or: [ReportDefinitionFilterInput!]
+  parameters: StringOperationFilterInput
+  reportDefinition: StringOperationFilterInput
+  revision: IntOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+}
+
+input ReportDefinitionSortInput {
+  active: SortEnumType
+  category: SortEnumType
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  description: SortEnumType
+  formDefinition: SortEnumType
+  id: SortEnumType
+  name: SortEnumType
+  parameters: SortEnumType
+  reportDefinition: SortEnumType
+  revision: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+}
+
+type ReportParameter {
+  name: String!
+  type: String!
+}
+
+"""A segment of a collection."""
+type ReportsCollectionSegment {
+  """A flattened list of the items."""
+  items: [ReportDefinition!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+type Role {
+  active: Boolean!
+  createdBy: String!
+  createdOn: DateTime!
+  dashboards: [Long!]!
+  id: Long!
+  name: String!
+  notes: String!
+  permissions: [String!]!
+  reports: [Long!]!
+  revision: Int!
+  updatedBy: String!
+  updatedOn: DateTime
+}
+
+input RoleFilterInput {
+  active: BooleanOperationFilterInput
+  and: [RoleFilterInput!]
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  dashboards: ListLongOperationFilterInput
+  id: LongOperationFilterInput
+  name: StringOperationFilterInput
+  notes: StringOperationFilterInput
+  or: [RoleFilterInput!]
+  permissions: ListStringOperationFilterInput
+  reports: ListLongOperationFilterInput
+  revision: IntOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+}
+
+input RoleSortInput {
+  active: SortEnumType
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  id: SortEnumType
+  name: SortEnumType
+  notes: SortEnumType
+  revision: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+}
+
+"""A segment of a collection."""
+type RolesCollectionSegment {
+  """A flattened list of the items."""
+  items: [Role!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input SaveReportInput {
+  description: String!
+  filterFormDefinition: String!
+  folder: String!
+  id: Long
+  name: String!
+  reportFile: Upload
+}
+
+input SetActiveDashboardInput {
+  dashboardId: Long!
 }
 
 enum SortEnumType {
@@ -326,6 +741,18 @@ input StringOperationFilterInput {
   startsWith: String
 }
 
+input UnlockUserInput {
+  id: Long!
+}
+
+input UpdateDashboardInput {
+  definition: String
+  description: String!
+  id: Long!
+  name: String!
+  viewer: String!
+}
+
 input UpdateElectionInput {
   electionType: ElectionType!
   endDate: DateTime!
@@ -334,11 +761,208 @@ input UpdateElectionInput {
   startDate: DateTime!
 }
 
+input UpdateReportInput {
+  description: String!
+  filterFormDefinition: String!
+  folder: String!
+  id: Long!
+  name: String!
+  reportFile: Upload
+}
+
+input UpdateRoleInput {
+  active: Boolean!
+  dashboards: [Long!]!
+  id: Long!
+  name: String!
+  notes: String!
+  permissions: [String!]!
+  reports: [Long!]!
+}
+
+input UpdateUserInput {
+  active: Boolean!
+  email: String!
+  firstName: String!
+  id: Long!
+  lastName: String!
+  otherNames: String!
+  roleId: Long!
+  tags: [String!]!
+  username: String!
+}
+
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
 input UploadFileInput {
   file: Upload!
+}
+
+type User {
+  active: Boolean!
+  activeDashboard: Dashboard!
+  activeDashboardId: Long
+  createdBy: String!
+  createdOn: DateTime!
+  email: String!
+  firstName: String!
+  id: Long!
+  otherNames: String!
+  password: String!
+  revision: Int!
+  role: Role!
+  roleId: Long!
+  surname: String!
+  tags: [String!]!
+  type: UserType!
+  updatedBy: String!
+  updatedOn: DateTime
+  username: String!
+}
+
+enum UserActivityType {
+  ACCOUNT_CREATED
+  CREATE
+  DELETE
+  READ
+  UPDATE
+}
+
+input UserActivityTypeOperationFilterInput {
+  eq: UserActivityType
+  in: [UserActivityType!]
+  neq: UserActivityType
+  nin: [UserActivityType!]
+}
+
+type UserFeed {
+  activity: UserActivityType!
+  createdBy: String!
+  createdOn: DateTime!
+  entityId: Long
+  entityType: String
+  id: Long!
+  notes: String!
+  revision: Int!
+  title: String!
+  type: EventType!
+  updatedBy: String!
+  updatedOn: DateTime
+  user: User!
+  userId: Long!
+}
+
+input UserFeedFilterInput {
+  activity: UserActivityTypeOperationFilterInput
+  and: [UserFeedFilterInput!]
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  entityId: LongOperationFilterInput
+  entityType: StringOperationFilterInput
+  id: LongOperationFilterInput
+  notes: StringOperationFilterInput
+  or: [UserFeedFilterInput!]
+  revision: IntOperationFilterInput
+  title: StringOperationFilterInput
+  type: EventTypeOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+  user: UserFilterInput
+  userId: LongOperationFilterInput
+}
+
+input UserFeedSortInput {
+  activity: SortEnumType
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  entityId: SortEnumType
+  entityType: SortEnumType
+  id: SortEnumType
+  notes: SortEnumType
+  revision: SortEnumType
+  title: SortEnumType
+  type: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+  user: UserSortInput
+  userId: SortEnumType
+}
+
+"""A segment of a collection."""
+type UserFeedsCollectionSegment {
+  """A flattened list of the items."""
+  items: [UserFeed!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserFilterInput {
+  active: BooleanOperationFilterInput
+  activeDashboard: DashboardFilterInput
+  activeDashboardId: LongOperationFilterInput
+  and: [UserFilterInput!]
+  createdBy: StringOperationFilterInput
+  createdOn: DateTimeOperationFilterInput
+  email: StringOperationFilterInput
+  firstName: StringOperationFilterInput
+  id: LongOperationFilterInput
+  or: [UserFilterInput!]
+  otherNames: StringOperationFilterInput
+  password: StringOperationFilterInput
+  revision: IntOperationFilterInput
+  role: RoleFilterInput
+  roleId: LongOperationFilterInput
+  surname: StringOperationFilterInput
+  tags: ListStringOperationFilterInput
+  type: UserTypeOperationFilterInput
+  updatedBy: StringOperationFilterInput
+  updatedOn: DateTimeOperationFilterInput
+  username: StringOperationFilterInput
+}
+
+input UserSortInput {
+  active: SortEnumType
+  activeDashboard: DashboardSortInput
+  activeDashboardId: SortEnumType
+  createdBy: SortEnumType
+  createdOn: SortEnumType
+  email: SortEnumType
+  firstName: SortEnumType
+  id: SortEnumType
+  otherNames: SortEnumType
+  password: SortEnumType
+  revision: SortEnumType
+  role: RoleSortInput
+  roleId: SortEnumType
+  surname: SortEnumType
+  type: SortEnumType
+  updatedBy: SortEnumType
+  updatedOn: SortEnumType
+  username: SortEnumType
+}
+
+enum UserType {
+  USER
+}
+
+input UserTypeOperationFilterInput {
+  eq: UserType
+  in: [UserType!]
+  neq: UserType
+  nin: [UserType!]
+}
+
+"""A segment of a collection."""
+type UsersCollectionSegment {
+  """A flattened list of the items."""
+  items: [User!]
+
+  """Information to aid in pagination."""
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
 }
 
 """A segment of a collection."""
@@ -408,6 +1032,9 @@ input VerificationEntrySortInput {
 }
 
 type VerificationFile {
+  allFailed: Int!
+  allManual: Int!
+  allSuccessful: Int!
   createdBy: String!
   createdOn: DateTime!
   date: DateTime!
@@ -422,7 +1049,7 @@ type VerificationFile {
   numberManual: Int!
   numberSuccessful: Int!
   pollingStationCode: String!
-  processTime: Int!
+  processTime: Float!
   revision: Int!
   status: VerificationFileStatus!
   updatedBy: String!
@@ -432,6 +1059,9 @@ type VerificationFile {
 }
 
 input VerificationFileFilterInput {
+  allFailed: IntOperationFilterInput
+  allManual: IntOperationFilterInput
+  allSuccessful: IntOperationFilterInput
   and: [VerificationFileFilterInput!]
   createdBy: StringOperationFilterInput
   createdOn: DateTimeOperationFilterInput
@@ -448,7 +1078,7 @@ input VerificationFileFilterInput {
   numberSuccessful: IntOperationFilterInput
   or: [VerificationFileFilterInput!]
   pollingStationCode: StringOperationFilterInput
-  processTime: IntOperationFilterInput
+  processTime: FloatOperationFilterInput
   revision: IntOperationFilterInput
   status: VerificationFileStatusOperationFilterInput
   updatedBy: StringOperationFilterInput
@@ -458,6 +1088,9 @@ input VerificationFileFilterInput {
 }
 
 input VerificationFileSortInput {
+  allFailed: SortEnumType
+  allManual: SortEnumType
+  allSuccessful: SortEnumType
   createdBy: SortEnumType
   createdOn: SortEnumType
   date: SortEnumType

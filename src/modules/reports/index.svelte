@@ -40,15 +40,30 @@
 		}
 	];
 
-	async function read() {
-		return getAllReports();
+	async function read(skip?: number, take?: number, defn?: TableFilter) {
+		const search = defn?.search;
+		let filterOptions = {} as ReportDefinitionFilterInput;
+		if (search) {
+			filterOptions.name = { contains: search };
+			filterOptions = {
+				...filterOptions,
+				or: [
+					{ name: { contains: search } },
+					{ description: { contains: search } }
+					// { viewer: { contains: query } }
+				]
+			};
+		}
+
+		return getAllReports(true, skip, take, filterOptions);
 	}
 </script>
 
 <script lang="ts">
-	import DataTable from '$cmps/ui/dataTable.svelte';
+	import DataTable, { type TableFilter } from '$cmps/ui/dataTable.svelte';
 	import type { ITableColumn } from '$cmps/ui/table.svelte';
-	import { getAllReports, readRoles } from '$svc/admin';
+	import type { ReportDefinitionFilterInput } from '$houdini';
+	import { createReport, deleteReport, getAllReports, updateReport } from '$svc/admin';
 	import Editor from './editor.svelte';
 </script>
 
@@ -56,6 +71,9 @@
 	{read}
 	tableColumns={columns}
 	editorComponent={Editor}
+	createEntry={createReport}
+	updateEntry={updateReport}
+	deleteEntry={deleteReport}
 	sideModalSize="md"
 	addButtonLabel="Add New Report"
 	addNewHeading="Add New Report"

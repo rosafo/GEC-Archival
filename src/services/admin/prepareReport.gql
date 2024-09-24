@@ -1,0 +1,5 @@
+query PrepareReport($input: GenerateReportInput!) {
+  prepareReport(input: $input) {
+    success, message, result, code
+  }
+}

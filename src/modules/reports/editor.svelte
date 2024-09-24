@@ -107,7 +107,7 @@
 			const { data } = ret;
 			const result = data.result;
 			if (result) {
-				fileResult = result;
+				fileResult = result as any;
 				if (result.length > 0) showEditor = true;
 			}
 		} catch (error: any) {
@@ -136,7 +136,7 @@
 			try {
 				const res = await getReport(recordId);
 
-				if (res.success) {
+				if (res?.success) {
 					const { data } = res;
 					formData = {
 						name: data.name,
@@ -146,7 +146,7 @@
 						reportFile: null
 					};
 				} else {
-					showError(res.message);
+					showError(res?.message || '');
 				}
 			} catch (err: any) {
 				// console.log(err);
